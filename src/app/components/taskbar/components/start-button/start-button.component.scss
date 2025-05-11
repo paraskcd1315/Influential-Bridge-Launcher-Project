@@ -1,0 +1,6 @@
+:host {
+    &.active {
+        transition: all 250ms ease;
+        border-color: var(--color-slate-400);
+    }
+}

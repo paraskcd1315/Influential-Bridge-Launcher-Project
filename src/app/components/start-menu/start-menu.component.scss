@@ -1,0 +1,13 @@
+#start-menu {
+    opacity: 0;
+    pointer-events: none;
+    position: relative;
+    transform: translateY(10px);
+    transition: all 250ms ease;
+
+    &.active {
+        opacity: 1;
+        pointer-events: unset;
+        transform: unset;
+    }
+}

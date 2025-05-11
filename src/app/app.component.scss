@@ -1,0 +1,5 @@
+:host {
+    background-image: url('/assets/wallpaper/wallpaper.jpg');
+
+    @apply relative flex h-screen w-screen flex-col overflow-hidden bg-contain;
+}
