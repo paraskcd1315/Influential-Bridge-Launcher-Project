@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
+import { Component, effect, inject, input, signal, viewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { StartMenuService } from './start-menu.service';
 
@@ -11,14 +11,104 @@ import { StartMenuService } from './start-menu.service';
     styleUrl: './start-menu.component.scss',
 })
 export class StartMenuComponent {
+    Object = Object;
     private readonly _startMenuService = inject(StartMenuService);
     active = input();
     apps = this._startMenuService.apps;
+    distributedApps = this._startMenuService.filteredApps;
+    activeLetter = signal<string | undefined>(undefined);
+    searchQuery = signal<string | undefined>(undefined);
+    searchInput = viewChild<any>('search');
+    letterSidebar = viewChild<any>('letterSidebar');
+    isDragging = false;
+    forceRerender = signal(true);
+
+    private debounceTimeout: any;
+    private dragDebounceTimeout: any;
+    private lastDraggedLetter?: string;
+
+    constructor() {
+        effect(() => {
+            clearTimeout(this.debounceTimeout);
+            const currentValue = this.searchQuery();
+            this.debounceTimeout = setTimeout(() => {
+                this._startMenuService.filter.set(currentValue);
+                this.forceRerender.set(false);
+                setTimeout(() => {
+                    this.forceRerender.set(true);
+                    if (currentValue && this.distributedApps()) {
+                        this.searchInput()?.nativeElement?.blur();
+                    }
+                }, 0);
+            }, 300);
+        });
+    }
 
     getAppIcon(packageName: string) {
         return this._startMenuService.getAppIcon(packageName);
     }
+
     openApp(packageName: string) {
         return this._startMenuService.openApp(packageName);
+    }
+
+    scrollToLetter(letter: string) {
+        const element = document.getElementById(letter);
+        const scrollContainer = document.querySelector('.scroll-anchor-container');
+        if (element && scrollContainer) {
+            const offsetTop = element.offsetTop;
+            (scrollContainer as HTMLElement).scrollTo({
+                top: offsetTop,
+                behavior: 'smooth',
+            });
+        }
+    }
+
+    startDrag(event: MouseEvent | TouchEvent) {
+        this.isDragging = true;
+        this.onDrag(event); // scroll inmediato al iniciar
+    }
+
+    onDrag(event: MouseEvent | TouchEvent) {
+        if (!this.isDragging || !this.letterSidebar()) return;
+        if (this.dragDebounceTimeout) return;
+
+        this.dragDebounceTimeout = setTimeout(() => {
+            this.dragDebounceTimeout = null;
+        }, 80);
+
+        const clientY = event instanceof TouchEvent ? event.touches[0].clientY : event.clientY;
+        const rect = this.letterSidebar()?.nativeElement.getBoundingClientRect();
+        const offsetY = clientY - rect.top;
+
+        const children = Array.from(this.letterSidebar()?.nativeElement.children) as HTMLElement[];
+        const childHeight = rect.height / children.length;
+        const index = Math.floor(offsetY / childHeight);
+        const letterElement = children[index];
+        const letter = letterElement?.getAttribute('data-letter');
+
+        if (letter && letter !== this.lastDraggedLetter) {
+            this.lastDraggedLetter = letter;
+            this.activeLetter.set(letter);
+            this.scrollToLetter(letter);
+        }
+    }
+
+    endDrag() {
+        this.activeLetter.set(undefined);
+        this.isDragging = false;
+        this.lastDraggedLetter = undefined;
+    }
+
+    clearSearch() {
+        this.searchQuery.set(undefined);
+        const inputEl = this.searchInput().nativeElement;
+        inputEl.value = '';
+        inputEl.blur();
+        inputEl.classList.add('clearing');
+
+        setTimeout(() => {
+            inputEl.classList.remove('clearing');
+        }, 300);
     }
 }
