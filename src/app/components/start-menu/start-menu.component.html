@@ -1,4 +1,4 @@
-<div id="start-menu" class="flex max-h-[calc(100dvh-18rem)] flex-col items-center justify-between gap-4 overflow-y-hidden rounded-lg border-t border-slate-400 px-4 pt-4 text-white backdrop-blur-2xl" [ngClass]="{ active: active() }">
+<div id="start-menu" class="flex max-h-[calc(100dvh-18rem)] flex-col items-center justify-between gap-4 overflow-y-hidden rounded-lg border-t border-slate-400 px-4 pt-4 text-white shadow-2xl backdrop-blur-2xl" [ngClass]="{ active: active() }">
 	<div class="flex w-4 w-full flex-col rounded-t-lg border-t border-slate-400 bg-slate-800/20">
 		<div class="flex w-full items-center gap-2 rounded-lg p-2">
 			<mat-icon class="w-full" svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
@@ -13,12 +13,12 @@
 		@for (letter of Object.keys(distributedApps()); track letter) {
 			<div class="flex flex-col gap-2 pb-2">
 				<button [id]="letter" class="w-full pl-2.5 text-left text-xl font-semibold uppercase">
-					{{ letter }}
+					<span class="prevent-select">{{ letter }}</span>
 				</button>
 				@for (app of distributedApps()[letter]; track app) {
-					<button class="flex items-center gap-2" (click)="openApp(app.packageName)">
+					<button class="flex items-center gap-2" (click)="openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)">
 						<img [src]="getAppIcon(app.packageName)" class="h-8 w-8" [alt]="app.label" />
-						<span class="text-start">
+						<span class="prevent-select text-start">
 							{{ app.label }}
 						</span>
 					</button>
@@ -36,14 +36,16 @@
 			(touchend)="endDrag()"
 		>
 			@for (letter of Object.keys(distributedApps()); track letter) {
-				<span class="cursor-pointer select-none" [attr.data-letter]="letter">
+				<span class="prevent-select cursor-pointer select-none" [attr.data-letter]="letter">
 					{{ letter }}
 				</span>
 			}
 		</div>
 	</div>
-
-	@if (activeLetter()) {
-		<div class="pointer-events-none absolute top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform rounded-lg border-t border-slate-400 bg-slate-800/20 p-4 text-5xl font-bold backdrop-blur-2xl">{{ activeLetter() }}</div>
-	}
 </div>
+@if (activeLetter()) {
+	<div class="animate-fade-in prevent-select pointer-events-none absolute top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform rounded-lg border-t border-slate-400 p-4 text-5xl font-bold text-white backdrop-blur-2xl">
+		{{ activeLetter() }}
+	</div>
+}
+<app-context-menu [contextMenuItems]="contextMenuItems()" [contextMenuPosition]="contextMenuPosition()" [contextMenuVisible]="contextMenuVisible()" [selectedApp]="selectedApp()" />

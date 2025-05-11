@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
+import { PINNED_APPS_KEY, PINNED_DOCK_APPS_KEY } from '../constants';
 
 @Injectable({
 	providedIn: 'root',
@@ -9,12 +10,37 @@ export class PersistenceService {
 	pinnedDockAppsStore = signal<BridgeInstalledAppInfo[]>([]);
 
 	constructor() {
-		this.loadApps();
+		this._loadApps();
 	}
 
-	loadApps() {
-		const pinnedApps = localStorage.getItem('pinnedApps');
-		const pinnedDockApps = localStorage.getItem('pinnedDockApps');
+	clearApps() {
+		localStorage.removeItem(PINNED_APPS_KEY);
+		localStorage.removeItem(PINNED_DOCK_APPS_KEY);
+	}
+
+	addPinnedApp(app: BridgeInstalledAppInfo) {
+		this.pinnedAppsStore.update((state) => [...state, app]);
+		this._saveApps();
+	}
+
+	addPinnedDockApp(app: BridgeInstalledAppInfo) {
+		this.pinnedDockAppsStore.update((state) => [...state, app]);
+		this._saveApps();
+	}
+
+	removePinnedApp(app: BridgeInstalledAppInfo) {
+		this.pinnedAppsStore.update((state) => state.filter((a) => a.packageName !== app.packageName));
+		this._saveApps();
+	}
+
+	removePinnedDockApp(app: BridgeInstalledAppInfo) {
+		this.pinnedDockAppsStore.update((state) => state.filter((a) => a.packageName !== app.packageName));
+		this._saveApps();
+	}
+
+	private _loadApps() {
+		const pinnedApps = localStorage.getItem(PINNED_APPS_KEY);
+		const pinnedDockApps = localStorage.getItem(PINNED_DOCK_APPS_KEY);
 
 		if (pinnedApps) {
 			this.pinnedAppsStore.set(JSON.parse(pinnedApps));
@@ -25,33 +51,8 @@ export class PersistenceService {
 		}
 	}
 
-	saveApps() {
-		localStorage.setItem('pinnedApps', JSON.stringify(this.pinnedAppsStore()));
-		localStorage.setItem('pinnedDockApps', JSON.stringify(this.pinnedDockAppsStore()));
-	}
-
-	clearApps() {
-		localStorage.removeItem('pinnedApps');
-		localStorage.removeItem('pinnedDockApps');
-	}
-
-	addPinnedApp(app: BridgeInstalledAppInfo) {
-		this.pinnedAppsStore.update((state) => [...state, app]);
-		this.saveApps();
-	}
-
-	addPinnedDockApp(app: BridgeInstalledAppInfo) {
-		this.pinnedDockAppsStore.update((state) => [...state, app]);
-		this.saveApps();
-	}
-
-	removePinnedApp(app: BridgeInstalledAppInfo) {
-		this.pinnedAppsStore.update((state) => state.filter((a) => a.packageName !== app.packageName));
-		this.saveApps();
-	}
-
-	removePinnedDockApp(app: BridgeInstalledAppInfo) {
-		this.pinnedDockAppsStore.update((state) => state.filter((a) => a.packageName !== app.packageName));
-		this.saveApps();
+	private _saveApps() {
+		localStorage.setItem(PINNED_APPS_KEY, JSON.stringify(this.pinnedAppsStore()));
+		localStorage.setItem(PINNED_DOCK_APPS_KEY, JSON.stringify(this.pinnedDockAppsStore()));
 	}
 }

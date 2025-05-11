@@ -1,43 +1,28 @@
 #start-menu {
-    opacity: 0;
-    pointer-events: none;
-    position: relative;
-    transform: translateY(10px);
-    transition: all 250ms ease;
+	opacity: 0;
+	pointer-events: none;
+	position: relative;
+	transform: translateY(10px);
+	transition: all 250ms ease;
 
-    &.active {
-        opacity: 1;
-        pointer-events: unset;
-        transform: unset;
-    }
+	&.active {
+		opacity: 1;
+		pointer-events: unset;
+		transform: unset;
+	}
 }
 
 input.clearing {
-    animation: fadeClear 0.3s ease;
+	animation: fadeClear 0.3s ease;
 }
 
 @keyframes fadeClear {
-    0% {
-        opacity: 0.5;
-        transform: scale(0.98);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.animate-fade-in {
-    animation: fadeInUp 0.5s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+	0% {
+		opacity: 0.5;
+		transform: scale(0.98);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
 }

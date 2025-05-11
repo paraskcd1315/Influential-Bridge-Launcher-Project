@@ -3,14 +3,36 @@
 /*  @ Main Tailwind file for injecting utilities.
 /* ----------------------------------------------------------------------------------------------------- */
 @import 'tailwindcss';
-@tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+@tailwind utilities;
 
 html,
 body {
-    height: 100%;
+	height: 100%;
 }
 body {
-    margin: 0;
-    font-family: 'Quicksand', Roboto, 'Helvetica Neue', sans-serif;
+	margin: 0;
+	font-family: 'Quicksand', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.animate-fade-in {
+	animation: fadeInUp 250ms ease-out;
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.prevent-select {
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
 }
