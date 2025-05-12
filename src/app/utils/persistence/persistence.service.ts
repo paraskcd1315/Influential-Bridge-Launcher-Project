@@ -55,4 +55,18 @@ export class PersistenceService {
 		localStorage.setItem(PINNED_APPS_KEY, JSON.stringify(this.pinnedAppsStore()));
 		localStorage.setItem(PINNED_DOCK_APPS_KEY, JSON.stringify(this.pinnedDockAppsStore()));
 	}
+
+	checkIfAppIsPinned(packageName?: string) {
+		if (!packageName) {
+			return false;
+		}
+		return this.pinnedAppsStore().some((app) => app.packageName === packageName);
+	}
+
+	checkIfDockAppIsPinned(packageName?: string) {
+		if (!packageName) {
+			return false;
+		}
+		return this.pinnedDockAppsStore().some((app) => app.packageName === packageName);
+	}
 }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, output } from '@angular/core';
-import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
-import { IContextMenuItem, IContextMenuPosition } from './context-menu.types';
+import { Component, inject } from '@angular/core';
+import { ContextMenuService } from './context-menu.service';
+import { IContextMenuItem } from './context-menu.types';
 
 @Component({
 	selector: 'app-context-menu',
@@ -10,11 +10,12 @@ import { IContextMenuItem, IContextMenuPosition } from './context-menu.types';
 	styleUrl: './context-menu.component.scss',
 })
 export class ContextMenuComponent {
-	contextMenuItems = input<IContextMenuItem[]>([]);
-	contextMenuPosition = input<IContextMenuPosition>({ x: 0, y: 0 });
-	contextMenuVisible = input<boolean>(false);
-	contextMenuItemSelected = output<IContextMenuItem>();
-	selectedApp = input<BridgeInstalledAppInfo | null>(null);
+	private readonly _contextMenuService = inject(ContextMenuService);
+
+	contextMenuItems = this._contextMenuService.contextMenuItems;
+	contextMenuPosition = this._contextMenuService.contextMenuPosition;
+	contextMenuVisible = this._contextMenuService.contextMenuVisible;
+	selectedApp = this._contextMenuService.selectedApp;
 
 	getContextMenuStyle() {
 		return {
@@ -25,6 +26,14 @@ export class ContextMenuComponent {
 	}
 
 	onClickContextMenuItem(item: IContextMenuItem) {
-		this.contextMenuItemSelected.emit(item);
+		this._contextMenuService.onSelectContextMenuItem(item);
+	}
+
+	openApp() {
+		this._contextMenuService.openApp();
+	}
+
+	getAppIcon() {
+		return this._contextMenuService.getAppIcon();
 	}
 }

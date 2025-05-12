@@ -5,37 +5,45 @@ import { environment } from '../../../environments/environment';
 const { Bridge } = window as any;
 
 @Injectable({
-    providedIn: 'root',
+	providedIn: 'root',
 })
 export class BridgeService {
-    bridge = signal<any>(undefined);
+	bridge = signal<any>(undefined);
 
-    constructor() {
-        this._injectBridgeMockInDev();
-    }
+	constructor() {
+		this._injectBridgeMockInDev();
+	}
 
-    appsResource = resource({
-        request: () => ({ bridge: this.bridge() }),
-        loader: ({ request }) => fetch(request.bridge.getAppsURL()).then((res) => res.json()),
-    });
+	appsResource = resource({
+		request: () => ({ bridge: this.bridge() }),
+		loader: ({ request }) => fetch(request.bridge.getAppsURL()).then((res) => res.json()),
+	});
 
-    apps = computed(() => {
-        return (this.appsResource.value() as BridgeGetAppsResponse)?.apps.sort((x, y) => x.label.localeCompare(y.label)) ?? [];
-    });
+	apps = computed(() => {
+		return (this.appsResource.value() as BridgeGetAppsResponse)?.apps.sort((x, y) => x.label.localeCompare(y.label)) ?? [];
+	});
 
-    getAppIcon(packageName: string) {
-        return this.bridge().getDefaultAppIconURL(packageName);
-    }
+	getAppIcon(packageName: string) {
+		return this.bridge().getDefaultAppIconURL(packageName);
+	}
 
-    requestLaunchApp(packageName: string) {
-        return this.bridge().requestLaunchApp(packageName, true);
-    }
+	requestLaunchApp(packageName: string) {
+		return this.bridge().requestLaunchApp(packageName, true);
+	}
 
-    private _injectBridgeMockInDev() {
-        if (!environment.production && !Bridge) {
-            window.Bridge = new BridgeMock();
-        }
+	requestUninstallApp(packageName: string) {
+		this.bridge().requestAppUninstall(packageName);
+	}
 
-        this.bridge.set(window.Bridge);
-    }
+	requestShowAppProperties(packageName: string) {
+		this.bridge().requestOpenAppInfo(packageName);
+	}
+
+	private _injectBridgeMockInDev() {
+		if (!environment.production && !Bridge) {
+			window.Bridge = new BridgeMock();
+		}
+
+		this.bridge.set(window.Bridge);
+	}
 }

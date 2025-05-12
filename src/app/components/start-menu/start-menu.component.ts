@@ -3,7 +3,7 @@ import { Component, effect, HostListener, inject, input, signal, viewChild } fro
 import { MatIconModule } from '@angular/material/icon';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
-import { IContextMenuItem, IContextMenuPosition } from '../context-menu/context-menu.types';
+import { ContextMenuService } from '../context-menu/context-menu.service';
 import { StartMenuService } from './start-menu.service';
 
 @Component({
@@ -14,8 +14,8 @@ import { StartMenuService } from './start-menu.service';
 	styleUrl: './start-menu.component.scss',
 })
 export class StartMenuComponent {
-	Object = Object;
 	private readonly _startMenuService = inject(StartMenuService);
+	private readonly _contextMenuService = inject(ContextMenuService);
 	active = input();
 	apps = this._startMenuService.apps;
 	distributedApps = this._startMenuService.filteredApps;
@@ -29,6 +29,8 @@ export class StartMenuComponent {
 	private debounceTimeout: any;
 	private dragDebounceTimeout: any;
 	private lastDraggedLetter?: string;
+
+	Object = Object;
 
 	constructor() {
 		effect(() => {
@@ -52,8 +54,8 @@ export class StartMenuComponent {
 	}
 
 	openApp(packageName: string) {
-		if (this.contextMenuVisible()) {
-			this.contextMenuVisible.set(false);
+		if (this._contextMenuService.contextMenuVisible()) {
+			this._contextMenuService.closeContextMenu();
 			return;
 		}
 		return this._startMenuService.openApp(packageName);
@@ -72,8 +74,8 @@ export class StartMenuComponent {
 	}
 
 	startDrag(event: MouseEvent | TouchEvent) {
-		if (this.contextMenuVisible()) {
-			this.contextMenuVisible.set(false);
+		if (this._contextMenuService.contextMenuVisible()) {
+			this._contextMenuService.closeContextMenu();
 		}
 		this.isDragging = true;
 		this.onDrag(event); // scroll inmediato al iniciar
@@ -122,38 +124,13 @@ export class StartMenuComponent {
 		}, 300);
 	}
 
-	contextMenuItems = signal<IContextMenuItem[]>([]);
-	contextMenuPosition = signal<IContextMenuPosition>({ x: 0, y: 0 });
-	contextMenuVisible = signal<boolean>(false);
-	selectedApp = signal<BridgeInstalledAppInfo | null>(null);
-
 	onContextMenu(event: MouseEvent, app: BridgeInstalledAppInfo) {
 		event.preventDefault();
-		this.contextMenuPosition.set({ x: event.clientX, y: event.clientY });
-		this.contextMenuItems.set([
-			{
-				menuText: 'Pin to Taskbar',
-				menuEvent: 'pinToTaskbar',
-			},
-			{
-				menuText: 'Pin to Favourites',
-				menuEvent: 'pinToFavourites',
-			},
-			{
-				menuText: 'Uninstall',
-				menuEvent: 'uninstall',
-			},
-			{
-				menuText: 'Properties',
-				menuEvent: 'properties',
-			},
-		]);
-		this.contextMenuVisible.set(true);
-		this.selectedApp.set(app);
+		this._contextMenuService.initializeAppContextMenu(app, event.clientX, event.clientY);
 	}
 
 	@HostListener('document:click', ['$event'])
 	onClick(event: MouseEvent) {
-		this.contextMenuVisible.set(false);
+		this._contextMenuService.closeContextMenu();
 	}
 }
