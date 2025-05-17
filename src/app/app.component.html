@@ -1,4 +1,15 @@
-<div class="absolute bottom-0 flex w-full flex-col">
-	<app-start-menu class="relative w-full p-8" [active]="startMenuActive()" />
-	<app-taskbar class="relative flex w-full flex-col px-8 pb-16 text-white" (openStartMenu)="openStartMenu()" />
+<div class="absolute bottom-43 flex w-full flex-col">
+	<app-weather />
 </div>
+
+<div class="absolute bottom-0 flex w-full flex-col">
+	<app-start-menu [ngClass]="{ 'pointer-events-none': !startMenuActive(), 'z-50': startMenuActive() }" [active]="startMenuActive()" />
+	<app-taskbar (openStartMenu)="openStartMenu()" />
+</div>
+
+<div class="absolute top-0 flex w-full flex-col" [ngClass]="{ 'pointer-events-none z-0': startMenuActive() }">
+	<app-date />
+	<app-app-grid />
+</div>
+
+<app-context-menu />

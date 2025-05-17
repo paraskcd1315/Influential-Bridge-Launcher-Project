@@ -1,0 +1,5 @@
+@reference "tailwindcss";
+
+:host {
+	@apply relative flex w-full flex-col px-12 pb-4 text-white;
+}

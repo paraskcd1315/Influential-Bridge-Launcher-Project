@@ -17,7 +17,7 @@
 				</button>
 				@for (app of distributedApps()[letter]; track app) {
 					<button class="flex items-center gap-2" (click)="openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)">
-						<img [src]="getAppIcon(app.packageName)" class="h-8 w-8" [alt]="app.label" />
+						<img [src]="getAppIcon(app.packageName, app.label)" class="h-8 w-8" [alt]="app.label" />
 						<span class="prevent-select text-start">
 							{{ app.label }}
 						</span>
@@ -48,4 +48,3 @@
 		{{ activeLetter() }}
 	</div>
 }
-<app-context-menu />

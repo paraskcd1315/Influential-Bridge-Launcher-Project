@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { BridgeService } from '../../utils/bridge/bridge.service';
+import { IconsService } from '../../utils/icons/icons.service';
 import { PersistenceService } from '../../utils/persistence/persistence.service';
 import { IContextMenuItem, IContextMenuPosition } from './context-menu.types';
 
@@ -10,6 +11,7 @@ import { IContextMenuItem, IContextMenuPosition } from './context-menu.types';
 export class ContextMenuService {
 	private readonly _bridgeService = inject(BridgeService);
 	private readonly _persistenceService = inject(PersistenceService);
+	private readonly _iconService = inject(IconsService);
 
 	contextMenuPosition = signal<IContextMenuPosition>({ x: 0, y: 0 });
 	contextMenuVisible = signal<boolean>(false);
@@ -61,6 +63,12 @@ export class ContextMenuService {
 
 	getAppIcon() {
 		if (this.selectedApp()) {
+			// Attempt to match any icon filename containing the iconName
+			const matchedIcon = this._iconService.getAppIcon(this.selectedApp()!.packageName);
+			if (matchedIcon) {
+				return `assets/icons/icon-pack/${matchedIcon}`;
+			}
+
 			return this._bridgeService.getAppIcon(this.selectedApp()!.packageName);
 		}
 	}

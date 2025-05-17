@@ -41,3 +41,11 @@ testem.log
 .DS_Store
 Thumbs.db
 public/mock/
+src/environments/
+
+public/assets/icons/icon-pack
+public/assets/icons/weather-icons
+
+*.sh
+*.xml
+*.json

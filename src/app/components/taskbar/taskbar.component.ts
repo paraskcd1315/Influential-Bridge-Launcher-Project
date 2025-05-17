@@ -1,19 +1,20 @@
 import { Component, ElementRef, HostListener, inject, output, viewChild } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { BridgeService } from '../../utils/bridge/bridge.service';
+import { IconsService } from '../../utils/icons/icons.service';
 import { PersistenceService } from '../../utils/persistence/persistence.service';
 import { ContextMenuService } from '../context-menu/context-menu.service';
-import { ClockComponent } from './components/clock/clock.component';
 import { StartButtonComponent } from './components/start-button/start-button.component';
 
 @Component({
 	selector: 'app-taskbar',
-	imports: [StartButtonComponent, ClockComponent],
+	imports: [StartButtonComponent],
 	standalone: true,
 	templateUrl: './taskbar.component.html',
 	styleUrl: './taskbar.component.scss',
 })
 export class TaskbarComponent {
+	private readonly _iconService = inject(IconsService);
 	private readonly _bridgeService = inject(BridgeService);
 	private readonly _persistenceService = inject(PersistenceService);
 	private readonly _contextMenuService = inject(ContextMenuService);
@@ -21,7 +22,12 @@ export class TaskbarComponent {
 	openStartMenuEventEmitter = output({ alias: 'openStartMenu' });
 	taskbarRef = viewChild<ElementRef>('taskbarRef');
 
-	getAppIcon(packageName: string) {
+	getAppIcon(packageName: string, label: string) {
+		// Attempt to match any icon filename containing the iconName
+		const matchedIcon = this._iconService.getAppIcon(packageName);
+		if (matchedIcon) {
+			return `assets/icons/icon-pack/${matchedIcon}`;
+		}
 		return this._bridgeService.getAppIcon(packageName);
 	}
 

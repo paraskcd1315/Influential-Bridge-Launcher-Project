@@ -1,6 +1,14 @@
+@reference "tailwindcss";
+
 :host {
-    &.active {
-        transition: all 250ms ease;
-        border-color: var(--color-slate-400);
-    }
+	@apply grid aspect-square shrink-0 grid-cols-2 gap-[1px] rounded border-t border-transparent p-3;
+
+	&.active {
+		transition: all 250ms ease;
+		border-color: var(--color-slate-400);
+
+		div {
+			@apply bg-gray-300;
+		}
+	}
 }

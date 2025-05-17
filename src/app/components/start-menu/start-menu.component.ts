@@ -2,18 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component, effect, HostListener, inject, input, signal, viewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
-import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { IconsService } from '../../utils/icons/icons.service';
 import { ContextMenuService } from '../context-menu/context-menu.service';
 import { StartMenuService } from './start-menu.service';
 
 @Component({
 	selector: 'app-start-menu',
-	imports: [CommonModule, MatIconModule, ContextMenuComponent],
+	imports: [CommonModule, MatIconModule],
 	standalone: true,
 	templateUrl: './start-menu.component.html',
 	styleUrl: './start-menu.component.scss',
 })
 export class StartMenuComponent {
+	private readonly _iconService = inject(IconsService);
 	private readonly _startMenuService = inject(StartMenuService);
 	private readonly _contextMenuService = inject(ContextMenuService);
 	active = input();
@@ -49,7 +50,12 @@ export class StartMenuComponent {
 		});
 	}
 
-	getAppIcon(packageName: string) {
+	getAppIcon(packageName: string, label: string) {
+		// Attempt to match any icon filename containing the iconName
+		const matchedIcon = this._iconService.getAppIcon(packageName);
+		if (matchedIcon) {
+			return `assets/icons/icon-pack/${matchedIcon}`;
+		}
 		return this._startMenuService.getAppIcon(packageName);
 	}
 
@@ -126,7 +132,24 @@ export class StartMenuComponent {
 
 	onContextMenu(event: MouseEvent, app: BridgeInstalledAppInfo) {
 		event.preventDefault();
-		this._contextMenuService.initializeAppContextMenu(app, event.clientX, event.clientY);
+		const { clientX, clientY } = event;
+		const maxX = window.innerWidth;
+		const maxY = window.innerHeight;
+
+		const contextMenuHeight = 290;
+		let safeY = clientY;
+
+		if (clientY + contextMenuHeight > maxY) {
+			safeY = maxY - contextMenuHeight - 8;
+		}
+
+		const contextMenuWidth = 200;
+		let safeX = clientX;
+
+		if (clientX + contextMenuWidth > maxX) {
+			safeX = maxX - contextMenuWidth - 8;
+		}
+		this._contextMenuService.initializeAppContextMenu(app, safeX, safeY);
 	}
 
 	@HostListener('document:click', ['$event'])
