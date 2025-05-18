@@ -3,6 +3,7 @@ import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { BridgeService } from '../../utils/bridge/bridge.service';
 import { IconsService } from '../../utils/icons/icons.service';
 import { PersistenceService } from '../../utils/persistence/persistence.service';
+import { StatusbarService } from '../../utils/statusbar/statusbar.service';
 import { ContextMenuService } from '../context-menu/context-menu.service';
 import { StartButtonComponent } from './components/start-button/start-button.component';
 
@@ -14,6 +15,7 @@ import { StartButtonComponent } from './components/start-button/start-button.com
 	styleUrl: './taskbar.component.scss',
 })
 export class TaskbarComponent {
+	private readonly _statusbarService = inject(StatusbarService);
 	private readonly _iconService = inject(IconsService);
 	private readonly _bridgeService = inject(BridgeService);
 	private readonly _persistenceService = inject(PersistenceService);
@@ -21,6 +23,33 @@ export class TaskbarComponent {
 	pinnedApps = this._persistenceService.pinnedDockAppsStore;
 	openStartMenuEventEmitter = output({ alias: 'openStartMenu' });
 	taskbarRef = viewChild<ElementRef>('taskbarRef');
+
+	wifiBars = ['icon-ic_fluent_wifi_4_24_regular', 'icon-ic_fluent_wifi_3_24_regular', 'icon-ic_fluent_wifi_2_24_regular', 'icon-ic_fluent_wifi_1_24_regular'];
+
+	telephonyBars = ['icon-ic_fluent_cellular_data_5_24_regular', 'icon-ic_fluent_cellular_data_4_24_regular', 'icon-ic_fluent_cellular_data_3_24_regular', 'icon-ic_fluent_cellular_data_2_24_regular', 'icon-ic_fluent_cellular_data_1_24_regular'];
+
+	batteryCharging = 'icon-ic_fluent_battery_charge_24_regular';
+
+	batteryBars = [
+		'icon-ic_fluent_battery_0_24_regular',
+		'icon-ic_fluent_battery_1_24_regular',
+		'icon-ic_fluent_battery_2_24_regular',
+		'icon-ic_fluent_battery_3_24_regular',
+		'icon-ic_fluent_battery_4_24_regular',
+		'icon-ic_fluent_battery_5_24_regular',
+		'icon-ic_fluent_battery_6_24_regular',
+		'icon-ic_fluent_battery_7_24_regular',
+		'icon-ic_fluent_battery_8_24_regular',
+		'icon-ic_fluent_battery_9_24_regular',
+		'icon-ic_fluent_battery_full_24_regular',
+	];
+
+	fullyCharged = 'icon-ic_fluent_battery_full_24_regular';
+
+	batteryLevel = this._statusbarService.batteryLevel;
+	batteryIsCharging = this._statusbarService.batteryIsCharging;
+	wifiLevel = this._statusbarService.wifiLevel;
+	mobileLevel = this._statusbarService.mobileLevel;
 
 	getAppIcon(packageName: string, label: string) {
 		// Attempt to match any icon filename containing the iconName
@@ -33,6 +62,10 @@ export class TaskbarComponent {
 
 	openApp(packageName: string) {
 		this._bridgeService.requestLaunchApp(packageName);
+	}
+
+	getBatteryIcon() {
+		return this.batteryBars[Math.ceil(this.batteryLevel() / 10)];
 	}
 
 	onContextMenu(event: MouseEvent, app: BridgeInstalledAppInfo) {

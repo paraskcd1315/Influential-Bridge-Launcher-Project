@@ -23,6 +23,34 @@ export class BridgeService {
 		return (this.appsResource.value() as BridgeGetAppsResponse)?.apps.sort((x, y) => x.label.localeCompare(y.label)) ?? [];
 	});
 
+	getBatteryLevel() {
+		return JSON.parse(this.bridge().getBatteryLevel()).batteryLevel;
+	}
+
+	getBatteryIsCharging() {
+		return JSON.parse(this.bridge().getBatteryIsCharging()).batteryCharging;
+	}
+
+	getWifiSignalLevel() {
+		return JSON.parse(this.bridge().getWifiSignalLevel()).wifiSignalLevel;
+	}
+
+	getMobileSignalLevel() {
+		return JSON.parse(this.bridge().getMobileSignalLevel()).mobileSignalLevel;
+	}
+
+	getMobileSignalStrength() {
+		return JSON.parse(this.bridge().getMobileSignalStrength()).mobileStrength;
+	}
+
+	getWifiSignalStrength() {
+		return JSON.parse(this.bridge().getWifiSignalStrength()).wifiStrength;
+	}
+
+	getNetworkType() {
+		return this.bridge().getNetworkType();
+	}
+
 	getAppIcon(packageName: string) {
 		return this.bridge().getDefaultAppIconURL(packageName);
 	}

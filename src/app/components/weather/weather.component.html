@@ -1,13 +1,13 @@
 <button #weatherRef class="flex w-full items-center rounded-lg border-t border-slate-400 px-6 py-8 shadow-2xl backdrop-blur-2xl" (click)="refresh()">
 	<div class="flex w-full items-center justify-between gap-4">
-		@if (weatherData()) {
+		@if (weatherData() && weatherData().length > 0) {
 			<div class="flex items-center gap-4">
 				<img class="w-12 shrink-0 object-contain" [src]="getWeatherIcon()" alt="" />
 
 				<div class="text-align-left flex w-full flex-col items-start">
-					<span class="font-bold">{{ cityName() }}</span>
-					<span>{{ weatherData()![0].main }}</span>
-					<span class="text-sm opacity-40">{{ weatherData()![0].description }}</span>
+					<span class="text-align-left font-bold">{{ cityName() }}</span>
+					<span class="text-align-left">{{ weatherData()![0].main }}</span>
+					<span class="text-align-left text-sm opacity-40">{{ weatherData()![0].description }}</span>
 				</div>
 			</div>
 		}

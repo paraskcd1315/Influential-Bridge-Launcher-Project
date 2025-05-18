@@ -1,7 +1,7 @@
 @reference "tailwindcss";
 
 :host {
-	@apply relative w-full p-16;
+	@apply relative w-full px-12 pb-15;
 }
 
 #start-menu {

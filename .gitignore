@@ -49,3 +49,7 @@ public/assets/icons/weather-icons
 *.sh
 *.xml
 *.json
+public/assets/fonts/FluentSystemIcons-Filled.css
+public/assets/fonts/FluentSystemIcons-Filled.ttf
+public/assets/fonts/FluentSystemIcons-Regular.css
+public/assets/fonts/FluentSystemIcons-Regular.ttf
