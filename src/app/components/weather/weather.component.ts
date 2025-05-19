@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { WeatherService } from '../../utils/weather/weather.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class WeatherComponent {
 	weatherData = this._weatherService.weatherData;
 	temperatureData = this._weatherService.temperatureData;
 	cityName = this._weatherService.cityName;
+	isLoading = this._weatherService.isLoading;
 
 	getWeatherIcon() {
 		if (!this.weatherData()[0]?.icon) {
@@ -21,6 +22,7 @@ export class WeatherComponent {
 		return this._weatherService.getWeatherIcon(this.weatherData()[0].icon!);
 	}
 
+	@HostListener('click')
 	refresh() {
 		this._weatherService.reload();
 	}

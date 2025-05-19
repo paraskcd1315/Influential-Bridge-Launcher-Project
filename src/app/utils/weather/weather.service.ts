@@ -22,6 +22,7 @@ export class WeatherService {
 	temperatureData = computed(() => this.weatherResource.value()?.main);
 	weatherData = computed(() => this.weatherResource.value()?.weather ?? []);
 	cityName = computed(() => this.weatherResource.value()?.name ?? '');
+	isLoading = this.weatherResource.isLoading;
 
 	constructor() {
 		this.reload();

@@ -48,7 +48,15 @@ export class BridgeService {
 	}
 
 	getNetworkType() {
-		return this.bridge().getNetworkType();
+		return JSON.parse(this.bridge().getNetworkType()).mobileDataNetworkType;
+	}
+
+	getWallpaperInfo() {
+		return JSON.parse(this.bridge().getWallpaperBase64()).wallpaperBase64;
+	}
+
+	refreshWallpaper() {
+		return this.bridge().requestWallpaperRefresh();
 	}
 
 	getAppIcon(packageName: string) {

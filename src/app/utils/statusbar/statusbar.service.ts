@@ -1,4 +1,4 @@
-import { effect, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { BridgeService } from '../bridge/bridge.service';
 
 @Injectable({
@@ -11,6 +11,7 @@ export class StatusbarService {
 	batteryLevel = signal<number>(0);
 
 	mobileLevel = signal<number>(0);
+	mobileNetworkType = signal<string>('');
 
 	wifiLevel = signal<number>(0);
 	wifiStrength = signal<number>(0);
@@ -19,6 +20,7 @@ export class StatusbarService {
 		this.batteryIsCharging.set(this._bridgeService.getBatteryIsCharging());
 		this.batteryLevel.set(this._bridgeService.getBatteryLevel());
 		this.mobileLevel.set(this._bridgeService.getMobileSignalLevel());
+		this.mobileNetworkType.set(this._bridgeService.getNetworkType());
 		this.wifiLevel.set(this._bridgeService.getWifiSignalLevel());
 		this.wifiStrength.set(this._bridgeService.getWifiSignalStrength());
 
@@ -30,22 +32,16 @@ export class StatusbarService {
 				case 'batteryLevelChanged':
 					this.batteryLevel.set(event.value);
 					break;
-				case 'wifiStrengthIsChanged':
-					console.log('wifiStrengthIsChanged', event.value);
-					this.wifiLevel.set(this._bridgeService.getWifiSignalLevel());
+				case 'wifiSignalLevelIsChanged':
+					this.wifiLevel.set(event.value);
 					break;
 				case 'mobileSignalLevelChanged':
 					this.mobileLevel.set(event.value);
 					break;
+				case 'mobileNetworkTypeIsChanged':
+					this.mobileNetworkType.set(event.value);
+					break;
 			}
 		};
-
-		effect(() => {
-			console.log('Battery', this.batteryIsCharging());
-			console.log('batteryLevel', this.batteryLevel());
-			console.log('mobileLevel', this.mobileLevel());
-			console.log('wifiLevel', this.wifiLevel());
-			console.log('wifiStrength', this.wifiStrength());
-		});
 	}
 }

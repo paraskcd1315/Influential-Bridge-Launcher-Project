@@ -24,9 +24,9 @@ export class TaskbarComponent {
 	openStartMenuEventEmitter = output({ alias: 'openStartMenu' });
 	taskbarRef = viewChild<ElementRef>('taskbarRef');
 
-	wifiBars = ['icon-ic_fluent_wifi_4_24_regular', 'icon-ic_fluent_wifi_3_24_regular', 'icon-ic_fluent_wifi_2_24_regular', 'icon-ic_fluent_wifi_1_24_regular'];
+	wifiBars = ['', 'icon-ic_fluent_wifi_4_24_regular', 'icon-ic_fluent_wifi_3_24_regular', 'icon-ic_fluent_wifi_2_24_regular', 'icon-ic_fluent_wifi_1_24_regular'];
 
-	telephonyBars = ['icon-ic_fluent_cellular_data_5_24_regular', 'icon-ic_fluent_cellular_data_4_24_regular', 'icon-ic_fluent_cellular_data_3_24_regular', 'icon-ic_fluent_cellular_data_2_24_regular', 'icon-ic_fluent_cellular_data_1_24_regular'];
+	telephonyBars = ['', 'icon-ic_fluent_cellular_data_5_24_regular', 'icon-ic_fluent_cellular_data_4_24_regular', 'icon-ic_fluent_cellular_data_3_24_regular', 'icon-ic_fluent_cellular_data_2_24_regular', 'icon-ic_fluent_cellular_data_1_24_regular'];
 
 	batteryCharging = 'icon-ic_fluent_battery_charge_24_regular';
 
@@ -41,15 +41,16 @@ export class TaskbarComponent {
 		'icon-ic_fluent_battery_7_24_regular',
 		'icon-ic_fluent_battery_8_24_regular',
 		'icon-ic_fluent_battery_9_24_regular',
-		'icon-ic_fluent_battery_full_24_regular',
+		'icon-ic_fluent_battery_10_24_regular',
 	];
 
-	fullyCharged = 'icon-ic_fluent_battery_full_24_regular';
+	fullyCharged = 'icon-ic_fluent_battery_10_24_regular';
 
 	batteryLevel = this._statusbarService.batteryLevel;
 	batteryIsCharging = this._statusbarService.batteryIsCharging;
 	wifiLevel = this._statusbarService.wifiLevel;
 	mobileLevel = this._statusbarService.mobileLevel;
+	mobileNetworkType = this._statusbarService.mobileNetworkType;
 
 	getAppIcon(packageName: string, label: string) {
 		// Attempt to match any icon filename containing the iconName
@@ -65,7 +66,11 @@ export class TaskbarComponent {
 	}
 
 	getBatteryIcon() {
-		return this.batteryBars[Math.ceil(this.batteryLevel() / 10)];
+		if (this.batteryLevel() < 100) {
+			return this.batteryBars[Math.ceil(this.batteryLevel() / 10)];
+		} else {
+			return this.fullyCharged;
+		}
 	}
 
 	onContextMenu(event: MouseEvent, app: BridgeInstalledAppInfo) {

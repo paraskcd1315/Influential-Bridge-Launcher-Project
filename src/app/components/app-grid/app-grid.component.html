@@ -1,6 +1,6 @@
-<div class="flex w-full snap-x snap-mandatory overflow-x-auto px-7 pt-8 whitespace-nowrap">
+<div class="flex w-full snap-x snap-mandatory overflow-x-auto px-7 pt-4 whitespace-nowrap">
 	@for (pageNumber of Object.keys(paginatedApps()); track pageNumber) {
-		<div class="mx-4 min-w-full snap-center px-12">
+		<div class="mx-4 min-w-full snap-center px-8">
 			<div class="grid grid-cols-4 gap-8">
 				@for (app of paginatedApps()[+pageNumber]; track app) {
 					<button class="flex flex-col items-center justify-center" (touchstart)="onTouchStart($event)" (touchend)="shouldTriggerTapTouch($event) && openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)">

@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
+import { HomescreenService } from '../../utils/homescreen/homescreen.service';
 
 @Component({
 	selector: 'app-date',
@@ -8,6 +9,7 @@ import { Component } from '@angular/core';
 	styleUrl: './date.component.scss',
 })
 export class DateComponent {
+	private readonly _homescreenService = inject(HomescreenService);
 	isoDate = new Date().toISOString();
 
 	ngOnInit(): void {
@@ -18,5 +20,13 @@ export class DateComponent {
 		this.isoDate = new Date().toISOString();
 
 		setTimeout(() => this._updateDate(), 1000);
+	}
+
+	@HostListener('click')
+	onClick() {
+		this._homescreenService.refreshWall();
+		setTimeout(() => {
+			location.reload();
+		}, 500);
 	}
 }
