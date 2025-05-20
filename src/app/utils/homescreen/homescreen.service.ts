@@ -9,17 +9,10 @@ export class HomescreenService {
 	wallpaper = signal<string>('');
 
 	constructor() {
-		this._init();
+		this.wallpaper.set(this._bridgeService.getWallpaper());
 	}
 
 	refreshWall() {
 		this._bridgeService.refreshWallpaper();
-		setTimeout(() => {
-			this._init();
-		}, 1000);
-	}
-
-	private _init() {
-		this.wallpaper.set(this._bridgeService.getWallpaperInfo());
 	}
 }

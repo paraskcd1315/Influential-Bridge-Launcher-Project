@@ -1,15 +1,15 @@
-<img [src]="wallpaper()" class="fixed h-screen w-screen object-cover" alt="wallpaper" />
+<img id="wallpaper" [src]="wallpaper()" class="pointer-events-none fixed top-0 left-0 h-[110vh] w-[110vw] object-cover" alt="wallpaper" />
 
 <div class="absolute bottom-43 flex w-full flex-col">
-	<app-weather />
+	<app-weather id="weather" />
 </div>
 
 <div class="absolute bottom-0 flex w-full flex-col">
-	<app-start-menu [ngClass]="{ 'pointer-events-none': !startMenuActive(), 'z-50': startMenuActive() }" [active]="startMenuActive()" />
-	<app-taskbar (openStartMenu)="openStartMenu()" />
+	<app-start-menu id="start-menu" [ngClass]="{ 'pointer-events-none': !startMenuActive(), 'z-50': startMenuActive() }" [active]="startMenuActive()" />
+	<app-taskbar id="taskbar" (openStartMenu)="openStartMenu()" />
 </div>
 
-<div class="absolute top-0 flex w-full flex-col" [ngClass]="{ 'pointer-events-none z-0': startMenuActive() }">
+<div id="app-grid" class="absolute top-0 flex w-full flex-col" [ngClass]="{ 'pointer-events-none z-0': startMenuActive() }">
 	<app-date />
 	<app-app-grid />
 </div>

@@ -1,4 +1,5 @@
-import { computed, Injectable, resource, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { computed, inject, Injectable, resource, signal } from '@angular/core';
 import { BridgeGetAppsResponse } from '@bridgelauncher/api';
 import { BridgeMock } from '@bridgelauncher/api-mock';
 import { environment } from '../../../environments/environment';
@@ -8,6 +9,7 @@ const { Bridge } = window as any;
 	providedIn: 'root',
 })
 export class BridgeService {
+	private readonly _httpClient = inject(HttpClient);
 	bridge = signal<any>(undefined);
 
 	constructor() {
@@ -24,39 +26,39 @@ export class BridgeService {
 	});
 
 	getBatteryLevel() {
-		return JSON.parse(this.bridge().getBatteryLevel()).batteryLevel;
+		return this.bridge().getBatteryLevel();
 	}
 
 	getBatteryIsCharging() {
-		return JSON.parse(this.bridge().getBatteryIsCharging()).batteryCharging;
+		return this.bridge().getBatteryIsCharging();
 	}
 
 	getWifiSignalLevel() {
-		return JSON.parse(this.bridge().getWifiSignalLevel()).wifiSignalLevel;
+		return this.bridge().getWifiSignalLevel();
 	}
 
 	getMobileSignalLevel() {
-		return JSON.parse(this.bridge().getMobileSignalLevel()).mobileSignalLevel;
+		return this.bridge().getMobileSignalLevel();
 	}
 
 	getMobileSignalStrength() {
-		return JSON.parse(this.bridge().getMobileSignalStrength()).mobileStrength;
+		return this.bridge().getMobileSignalStrength();
 	}
 
 	getWifiSignalStrength() {
-		return JSON.parse(this.bridge().getWifiSignalStrength()).wifiStrength;
+		return this.bridge().getWifiSignalStrength();
 	}
 
 	getNetworkType() {
-		return JSON.parse(this.bridge().getNetworkType()).mobileDataNetworkType;
+		return this.bridge().getNetworkType();
 	}
 
-	getWallpaperInfo() {
-		return JSON.parse(this.bridge().getWallpaperBase64()).wallpaperBase64;
+	getWallpaper() {
+		return `data:image/png;base64,${this.bridge().getSystemWallpaperBase64()}`;
 	}
 
 	refreshWallpaper() {
-		return this.bridge().requestWallpaperRefresh();
+		this.bridge().requestWallpaperRefresh();
 	}
 
 	getAppIcon(packageName: string) {
