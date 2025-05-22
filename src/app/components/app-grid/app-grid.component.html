@@ -4,7 +4,12 @@
 			<div class="grid grid-cols-4 gap-8">
 				@for (app of paginatedApps()[+pageNumber]; track app) {
 					<button class="flex flex-col items-center justify-center" (touchstart)="onTouchStart($event)" (touchend)="shouldTriggerTapTouch($event) && openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)">
-						<img [src]="getAppIcon(app.packageName, app.label)" [alt]="app.label" class="w-12 shrink-0 object-contain" />
+						<div class="relative flex">
+							<img [src]="getAppIcon(app.packageName, app.label)" [alt]="app.label" class="w-12 shrink-0 object-contain" />
+							@if (notifications()[app.packageName]) {
+								<div class="absolute top-0 right-0 h-2 w-2 rounded-full bg-white"></div>
+							}
+						</div>
 						<span class="w-14 truncate text-xs text-white">{{ app.label }}</span>
 					</button>
 				}

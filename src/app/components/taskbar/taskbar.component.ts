@@ -51,6 +51,7 @@ export class TaskbarComponent {
 	wifiLevel = this._statusbarService.wifiLevel;
 	mobileLevel = this._statusbarService.mobileLevel;
 	mobileNetworkType = this._statusbarService.mobileNetworkType;
+	notifications = this._statusbarService.notificationCounts;
 
 	getAppIcon(packageName: string, label: string) {
 		// Attempt to match any icon filename containing the iconName

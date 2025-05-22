@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, resource, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { BridgeGetAppsResponse } from '@bridgelauncher/api';
 import { BridgeMock } from '@bridgelauncher/api-mock';
+import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 const { Bridge } = window as any;
 
@@ -14,15 +16,16 @@ export class BridgeService {
 
 	constructor() {
 		this._injectBridgeMockInDev();
+		console.log('Get Notifications', this.bridge().getNotificationCounts());
 	}
 
-	appsResource = resource({
+	appsResource = rxResource({
 		request: () => ({ bridge: this.bridge() }),
-		loader: ({ request }) => fetch(request.bridge.getAppsURL()).then((res) => res.json()),
+		loader: ({ request }) => this._httpClient.get(request.bridge.getAppsURL()).pipe(map((x) => (x as BridgeGetAppsResponse).apps)),
 	});
 
 	apps = computed(() => {
-		return (this.appsResource.value() as BridgeGetAppsResponse)?.apps.sort((x, y) => x.label.localeCompare(y.label)) ?? [];
+		return this.appsResource.value()?.sort((x, y) => x.label.localeCompare(y.label)) ?? [];
 	});
 
 	getBatteryLevel() {
@@ -75,6 +78,10 @@ export class BridgeService {
 
 	requestShowAppProperties(packageName: string) {
 		this.bridge().requestOpenAppInfo(packageName);
+	}
+
+	getNotificationCounts(): Record<string, number> {
+		return JSON.parse(this.bridge().getNotificationCounts());
 	}
 
 	private _injectBridgeMockInDev() {

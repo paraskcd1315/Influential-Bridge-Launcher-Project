@@ -3,6 +3,7 @@ import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { BridgeService } from '../../utils/bridge/bridge.service';
 import { IconsService } from '../../utils/icons/icons.service';
 import { PersistenceService } from '../../utils/persistence/persistence.service';
+import { StatusbarService } from '../../utils/statusbar/statusbar.service';
 import { ContextMenuService } from '../context-menu/context-menu.service';
 
 @Component({
@@ -12,16 +13,20 @@ import { ContextMenuService } from '../context-menu/context-menu.service';
 	styleUrl: './app-grid.component.scss',
 })
 export class AppGridComponent {
+	private readonly _statusbarService = inject(StatusbarService);
 	private readonly _contextMenuService = inject(ContextMenuService);
 	private readonly _bridgeService = inject(BridgeService);
 	private readonly _iconService = inject(IconsService);
 	private readonly _persistenceService = inject(PersistenceService);
 	apps = this._persistenceService.pinnedAppsStore;
+
 	Object = Object;
 
 	private touchStartX = 0;
 	private touchStartY = 0;
 	private readonly touchThreshold = 10;
+
+	notifications = this._statusbarService.notificationCounts;
 
 	paginatedApps = computed(() => {
 		const allApps = this.apps();

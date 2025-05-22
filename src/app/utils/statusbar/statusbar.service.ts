@@ -16,6 +16,8 @@ export class StatusbarService {
 	wifiLevel = signal<number>(0);
 	wifiStrength = signal<number>(0);
 
+	notificationCounts = signal<Record<string, number>>({});
+
 	constructor() {
 		this.batteryIsCharging.set(this._bridgeService.getBatteryIsCharging());
 		this.batteryLevel.set(this._bridgeService.getBatteryLevel());
@@ -23,6 +25,7 @@ export class StatusbarService {
 		this.mobileNetworkType.set(this._bridgeService.getNetworkType());
 		this.wifiLevel.set(this._bridgeService.getWifiSignalLevel());
 		this.wifiStrength.set(this._bridgeService.getWifiSignalStrength());
+		this.notificationCounts.set(this._bridgeService.getNotificationCounts());
 
 		window.onBridgeEvent = (event: any) => {
 			switch (event.name) {
@@ -40,6 +43,9 @@ export class StatusbarService {
 					break;
 				case 'mobileNetworkTypeIsChanged':
 					this.mobileNetworkType.set(event.value);
+					break;
+				case 'notificationCountsChanged':
+					this.notificationCounts.set(event.value);
 					break;
 			}
 		};
