@@ -16,7 +16,6 @@ export class BridgeService {
 
 	constructor() {
 		this._injectBridgeMockInDev();
-		console.log('Get Notifications', this.bridge().getNotificationCounts());
 	}
 
 	appsResource = rxResource({
@@ -29,39 +28,43 @@ export class BridgeService {
 	});
 
 	getBatteryLevel() {
-		return this.bridge().getBatteryLevel();
+		return this.bridge().getBatteryLevel?.();
 	}
 
 	getBatteryIsCharging() {
-		return this.bridge().getBatteryIsCharging();
+		return this.bridge().getBatteryIsCharging?.();
 	}
 
 	getWifiSignalLevel() {
-		return this.bridge().getWifiSignalLevel();
+		return this.bridge().getWifiSignalLevel?.();
 	}
 
 	getMobileSignalLevel() {
-		return this.bridge().getMobileSignalLevel();
+		return this.bridge().getMobileSignalLevel?.();
 	}
 
 	getMobileSignalStrength() {
-		return this.bridge().getMobileSignalStrength();
+		return this.bridge().getMobileSignalStrength?.();
 	}
 
 	getWifiSignalStrength() {
-		return this.bridge().getWifiSignalStrength();
+		return this.bridge().getWifiSignalStrength?.();
 	}
 
 	getNetworkType() {
-		return this.bridge().getNetworkType();
+		return this.bridge().getNetworkType?.();
 	}
 
 	getWallpaper() {
-		return `data:image/png;base64,${this.bridge().getSystemWallpaperBase64()}`;
+		if (this.bridge().getSystemWallpaperBase64?.()) {
+			return `data:image/png;base64,${this.bridge().getSystemWallpaperBase64()}`;
+		} else {
+			return 'assets/wallpaper/wallpaper.jpg';
+		}
 	}
 
 	refreshWallpaper() {
-		this.bridge().requestWallpaperRefresh();
+		this.bridge().requestWallpaperRefresh?.();
 	}
 
 	getAppIcon(packageName: string) {
@@ -80,8 +83,52 @@ export class BridgeService {
 		this.bridge().requestOpenAppInfo(packageName);
 	}
 
-	getNotificationCounts(): Record<string, number> {
-		return JSON.parse(this.bridge().getNotificationCounts());
+	getNotificationCounts(): Record<string, number> | undefined {
+		if (this.bridge().getNotificationCounts?.()) {
+			return JSON.parse(this.bridge().getNotificationCounts());
+		}
+
+		return undefined;
+	}
+
+	requestMediaPlay() {
+		this.bridge().requestMediaPlay?.();
+	}
+
+	requestMediaPause() {
+		this.bridge().requestMediaPause?.();
+	}
+
+	requestMediaSkipNext() {
+		this.bridge().requestMediaSkipNext?.();
+	}
+
+	requestMediaSkipPrevious() {
+		this.bridge().requestMediaSkipPrevious?.();
+	}
+
+	getCurrentMediaMetadataArtist() {
+		return this.bridge().getCurrentMediaMetadataArtist?.();
+	}
+
+	getCurrentMediaMetadataAlbum() {
+		return this.bridge().getCurrentMediaMetadataAlbum?.();
+	}
+
+	getCurrentMediaMetadataTitle() {
+		return this.bridge().getCurrentMediaMetadataTitle?.();
+	}
+
+	getCurrentMediaMetadataDuration() {
+		return this.bridge().getCurrentMediaMetadataDuration?.();
+	}
+
+	getCurrentMediaMetadataArtworkBase64() {
+		return this.bridge().getCurrentMediaMetadataArtworkBase64?.();
+	}
+
+	getIsPlaying() {
+		return this.bridge().getIsPlaying?.();
 	}
 
 	private _injectBridgeMockInDev() {

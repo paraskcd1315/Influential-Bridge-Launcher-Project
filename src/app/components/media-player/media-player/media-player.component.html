@@ -1,0 +1,35 @@
+<div class="flex w-full items-center rounded-lg border-t border-slate-400 px-6 py-8 shadow-2xl backdrop-blur-2xl">
+	<div class="flex w-full items-center justify-between gap-4">
+		@if (Object.keys(media()).length > 0) {
+			<div class="flex items-center gap-2">
+				<div class="flex items-center">
+					@if (media().artworkBase64) {
+						<img class="w-12 shrink-0 object-contain" [src]="getMediaThumbnail(media().artworkBase64)" alt="" />
+					}
+				</div>
+				<div class="flex flex-col">
+					@if (media().title) {
+						<span class="text-align-left w-30 truncate font-bold">{{ media().title }}</span>
+					}
+					@if (media().artist) {
+						<span class="text-align-left w-30 truncate">{{ media().artist }}</span>
+					}
+				</div>
+			</div>
+		}
+	</div>
+	<div class="flex items-center gap-2">
+		@if (isPlaying()) {
+			<button (click)="pause()">
+				<i class="icon-ic_fluent_pause_48_regular text-5xl"></i>
+			</button>
+			<button (click)="skip()">
+				<i class="icon-ic_fluent_next_48_regular text-2xl"></i>
+			</button>
+		} @else {
+			<button (click)="play()">
+				<i class="icon-ic_fluent_play_48_regular text-5xl"></i>
+			</button>
+		}
+	</div>
+</div>
