@@ -1,5 +1,10 @@
 <div class="flex w-full items-center rounded-lg border-t border-slate-400 px-6 py-8 shadow-2xl backdrop-blur-2xl">
-	<div class="flex w-full items-center justify-between gap-4">
+	<div class="relative flex w-full items-center justify-between gap-4">
+		@if (media().artworkBase64) {
+			<div class="absolute inset-0 -z-10">
+				<img class="h-full w-full shrink-0 rounded-lg object-cover blur-lg filter" [src]="getMediaThumbnail(media().artworkBase64)" alt="" />
+			</div>
+		}
 		@if (Object.keys(media()).length > 0) {
 			<div class="flex items-center gap-2">
 				<div class="flex items-center">
@@ -9,17 +14,20 @@
 				</div>
 				<div class="flex flex-col">
 					@if (media().title) {
-						<span class="text-align-left w-30 truncate font-bold">{{ media().title }}</span>
+						<span class="text-align-left w-28 truncate font-bold">{{ media().title }}</span>
 					}
 					@if (media().artist) {
-						<span class="text-align-left w-30 truncate">{{ media().artist }}</span>
+						<span class="text-align-left w-28 truncate">{{ media().artist }}</span>
 					}
 				</div>
 			</div>
 		}
 	</div>
-	<div class="flex items-center gap-2">
+	<div class="relative flex items-center gap-2">
 		@if (isPlaying()) {
+			<button (click)="previous()">
+				<i class="icon-ic_fluent_previous_48_regular text-2xl"></i>
+			</button>
 			<button (click)="pause()">
 				<i class="icon-ic_fluent_pause_48_regular text-5xl"></i>
 			</button>

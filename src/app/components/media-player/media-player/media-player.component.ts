@@ -29,6 +29,10 @@ export class MediaPlayerComponent {
 		return `data:image/png;base64,${base64}`;
 	}
 
+	previous() {
+		this._bridgeService.requestMediaSkipPrevious();
+	}
+
 	skip() {
 		this._bridgeService.requestMediaSkipNext();
 	}
