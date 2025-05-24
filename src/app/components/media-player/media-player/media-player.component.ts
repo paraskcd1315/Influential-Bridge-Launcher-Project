@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { BridgeService } from '../../../utils/bridge/bridge.service';
 import { StatusbarService } from '../../../utils/statusbar/statusbar.service';
 
@@ -17,11 +17,13 @@ export class MediaPlayerComponent {
 	media = this._statusbarService.media;
 	isPlaying = this._statusbarService.isPlaying;
 
-	pause() {
+	pause(event: MouseEvent) {
+		event.stopPropagation();
 		this._bridgeService.requestMediaPause();
 	}
 
-	play() {
+	play(event: MouseEvent) {
+		event.stopPropagation();
 		this._bridgeService.requestMediaPlay();
 	}
 
@@ -29,11 +31,18 @@ export class MediaPlayerComponent {
 		return `data:image/png;base64,${base64}`;
 	}
 
-	previous() {
+	previous(event: MouseEvent) {
+		event.stopPropagation();
 		this._bridgeService.requestMediaSkipPrevious();
 	}
 
-	skip() {
+	skip(event: MouseEvent) {
+		event.stopPropagation();
 		this._bridgeService.requestMediaSkipNext();
+	}
+
+	@HostListener('click')
+	appLaunch() {
+		this._bridgeService.requestMediaAppLaunch();
 	}
 }

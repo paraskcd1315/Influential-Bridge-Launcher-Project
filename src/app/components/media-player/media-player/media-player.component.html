@@ -1,23 +1,23 @@
-<div class="flex w-full items-center rounded-lg border-t border-slate-400 px-6 py-8 shadow-2xl backdrop-blur-2xl">
+<div class="flex w-full items-center overflow-hidden rounded-lg border-t border-slate-400 px-6 py-8 shadow-2xl backdrop-blur-2xl">
+	@if (media().artworkBase64) {
+		<div class="absolute inset-0 -z-10">
+			<img class="h-full w-full object-cover opacity-20 blur-lg filter" [src]="getMediaThumbnail(media().artworkBase64)" alt="" />
+		</div>
+	}
 	<div class="relative flex w-full items-center justify-between gap-4">
-		@if (media().artworkBase64) {
-			<div class="absolute inset-0 -z-10">
-				<img class="h-full w-full shrink-0 rounded-lg object-cover blur-lg filter" [src]="getMediaThumbnail(media().artworkBase64)" alt="" />
-			</div>
-		}
 		@if (Object.keys(media()).length > 0) {
 			<div class="flex items-center gap-2">
 				<div class="flex items-center">
 					@if (media().artworkBase64) {
-						<img class="w-12 shrink-0 object-contain" [src]="getMediaThumbnail(media().artworkBase64)" alt="" />
+						<img class="w-12 shrink-0 rounded-lg object-contain shadow-2xl" [src]="getMediaThumbnail(media().artworkBase64)" alt="" />
 					}
 				</div>
 				<div class="flex flex-col">
 					@if (media().title) {
-						<span class="text-align-left w-28 truncate font-bold">{{ media().title }}</span>
+						<span class="text-align-left max-w-28 truncate font-bold">{{ media().title }}</span>
 					}
 					@if (media().artist) {
-						<span class="text-align-left w-28 truncate">{{ media().artist }}</span>
+						<span class="text-align-left max-w-28 truncate">{{ media().artist }}</span>
 					}
 				</div>
 			</div>
@@ -25,17 +25,17 @@
 	</div>
 	<div class="relative flex items-center gap-2">
 		@if (isPlaying()) {
-			<button (click)="previous()">
+			<button (click)="previous($event)">
 				<i class="icon-ic_fluent_previous_48_regular text-2xl"></i>
 			</button>
-			<button (click)="pause()">
+			<button (click)="pause($event)">
 				<i class="icon-ic_fluent_pause_48_regular text-5xl"></i>
 			</button>
-			<button (click)="skip()">
+			<button (click)="skip($event)">
 				<i class="icon-ic_fluent_next_48_regular text-2xl"></i>
 			</button>
 		} @else {
-			<button (click)="play()">
+			<button (click)="play($event)">
 				<i class="icon-ic_fluent_play_48_regular text-5xl"></i>
 			</button>
 		}

@@ -131,6 +131,10 @@ export class BridgeService {
 		return this.bridge().getIsPlaying?.();
 	}
 
+	requestMediaAppLaunch() {
+		this.bridge().requestMediaAppLaunch?.();
+	}
+
 	private _injectBridgeMockInDev() {
 		if (!environment.production && !Bridge) {
 			window.Bridge = new BridgeMock();
