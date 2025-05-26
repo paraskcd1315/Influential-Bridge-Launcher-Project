@@ -131,6 +131,14 @@ export class BridgeService {
 		return this.bridge().getIsPlaying?.();
 	}
 
+	getLocationLatitude() {
+		return this.bridge().getLocationLatitude?.();
+	}
+
+	getLocationLongitude() {
+		return this.bridge().getLocationLongitude?.();
+	}
+
 	requestMediaAppLaunch() {
 		this.bridge().requestMediaAppLaunch?.();
 	}

@@ -22,6 +22,8 @@ export class StatusbarService {
 	media = signal<MediaType>({});
 	isPlaying = signal<boolean>(false);
 
+	location = signal<{ latitude: number; longitude: number }>({ latitude: 0, longitude: 0 });
+
 	constructor() {
 		this.batteryIsCharging.set(this._bridgeService.getBatteryIsCharging());
 		this.batteryLevel.set(this._bridgeService.getBatteryLevel());
@@ -38,6 +40,10 @@ export class StatusbarService {
 			artworkBase64: this._bridgeService.getCurrentMediaMetadataArtworkBase64(),
 		});
 		this.isPlaying.set(this._bridgeService.getIsPlaying());
+		this.location.set({
+			latitude: this._bridgeService.getLocationLatitude(),
+			longitude: this._bridgeService.getLocationLongitude(),
+		});
 
 		window.onBridgeEvent = (event: any) => {
 			switch (event.name) {
@@ -70,6 +76,12 @@ export class StatusbarService {
 					break;
 				case 'isPlayingChanged':
 					this.isPlaying.set(event.value);
+					break;
+				case 'locationChanged':
+					this.location.set({
+						latitude: event.latitude,
+						longitude: event.longitude,
+					});
 					break;
 			}
 		};

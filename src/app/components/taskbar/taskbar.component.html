@@ -14,9 +14,9 @@
 	</div>
 </div>
 <div #taskbarRef class="flex items-center justify-between rounded-lg border-t border-slate-400 p-4 shadow-2xl backdrop-blur-2xl">
-	<div class="flex items-center gap-4">
+	<div class="flex items-center gap-5">
 		<app-start-button (startEmitter)="openStartMenuEventEmitter.emit()" />
-		<div class="flex w-full gap-3 overflow-x-auto whitespace-nowrap">
+		<div class="flex w-full gap-x-4 overflow-x-auto whitespace-nowrap">
 			@for (app of pinnedApps(); track app) {
 				<button class="relative shrink-0" (click)="openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)">
 					<img [src]="getAppIcon(app.packageName, app.label)" [alt]="app.label" class="h-10 w-10" />

@@ -1,0 +1,11 @@
+<div *ngIf="isVisible()" class="animate-fade-in fixed top-1/2 left-1/2 z-100 flex w-3/4 -translate-x-1/2 -translate-y-1/2 flex-col gap-2 rounded-lg border-t border-slate-400 py-4 text-white shadow-2xl backdrop-blur-2xl">
+	<div class="flex items-center justify-between px-4">
+		<h1 class="font-bold">Remove {{ selectedApp()?.label }}</h1>
+		<button (click)="dismiss()"><i class="icon-ic_fluent_dismiss_12_regular"></i></button>
+	</div>
+	<p class="border-b border-white/30 px-4 pb-6 text-start">Are you sure you want to remove this app?</p>
+	<div class="flex items-center justify-end gap-2 px-4">
+		<button class="rounded-lg border-t border-slate-400 bg-slate-800/20 p-2 shadow-2xl" (click)="remove()">Remove</button>
+		<button class="rounded-lg border-t border-slate-400 bg-red-500/20 p-2 text-red-500 shadow-2xl" (click)="uninstall()">Uninstall</button>
+	</div>
+</div>

@@ -1,5 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
+import { AppGridService } from '../../utils/app-grid/app-grid.service';
 import { BridgeService } from '../../utils/bridge/bridge.service';
 import { IconsService } from '../../utils/icons/icons.service';
 import { PersistenceService } from '../../utils/persistence/persistence.service';
@@ -9,10 +10,12 @@ import { IContextMenuItem, IContextMenuPosition } from './context-menu.types';
 	providedIn: 'root',
 })
 export class ContextMenuService {
+	private readonly _appGridService = inject(AppGridService);
 	private readonly _bridgeService = inject(BridgeService);
 	private readonly _persistenceService = inject(PersistenceService);
 	private readonly _iconService = inject(IconsService);
 
+	fromGrid = signal<boolean>(false);
 	contextMenuPosition = signal<IContextMenuPosition>({ x: 0, y: 0 });
 	contextMenuVisible = signal<boolean>(false);
 	selectedApp = signal<BridgeInstalledAppInfo | null>(null);
@@ -20,7 +23,7 @@ export class ContextMenuService {
 	contextMenuItems = computed(() => {
 		const alreadyExistsTaskbar = this._persistenceService.checkIfDockAppIsPinned(this.selectedApp()?.packageName);
 		const alreadyExistsFavourites = this._persistenceService.checkIfAppIsPinned(this.selectedApp()?.packageName);
-		return [
+		const contextMenuItems: IContextMenuItem[] = [
 			{
 				menuText: alreadyExistsTaskbar ? 'Unpin from Taskbar' : 'Pin to Taskbar',
 				menuEvent: alreadyExistsTaskbar ? 'unpinFromTaskbar' : 'pinToTaskbar',
@@ -38,12 +41,22 @@ export class ContextMenuService {
 				menuEvent: 'properties',
 			},
 		];
+
+		if (this.fromGrid()) {
+			contextMenuItems.unshift({
+				menuText: 'Enable Edit Mode',
+				menuEvent: 'enableEditMode',
+			});
+		}
+
+		return contextMenuItems;
 	});
 
-	initializeAppContextMenu(app: BridgeInstalledAppInfo, x: number, y: number) {
+	initializeAppContextMenu(app: BridgeInstalledAppInfo, x: number, y: number, fromGrid: boolean = false) {
 		this.contextMenuPosition.set({ x: x, y: y });
 		this.contextMenuVisible.set(true);
 		this.selectedApp.set(app);
+		this.fromGrid.set(fromGrid);
 	}
 
 	toggleContextMenu() {
@@ -79,6 +92,9 @@ export class ContextMenuService {
 		}
 
 		switch (item.menuEvent) {
+			case 'enableEditMode':
+				this._appGridService.isEditMode.set(true);
+				break;
 			case 'unpinFromTaskbar':
 				this._persistenceService.removePinnedDockApp(this.selectedApp()!);
 				break;
@@ -98,5 +114,7 @@ export class ContextMenuService {
 				this._bridgeService.requestShowAppProperties(this.selectedApp()!.packageName);
 				break;
 		}
+
+		this.closeContextMenu();
 	}
 }

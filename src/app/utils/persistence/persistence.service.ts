@@ -1,12 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { PINNED_APPS_KEY, PINNED_DOCK_APPS_KEY } from '../constants';
+import { NullableBridgeApp } from './persistence.types';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class PersistenceService {
-	pinnedAppsStore = signal<BridgeInstalledAppInfo[]>([]);
+	pinnedAppsStore = signal<NullableBridgeApp[]>([]);
 	pinnedDockAppsStore = signal<BridgeInstalledAppInfo[]>([]);
 
 	constructor() {
@@ -29,12 +30,17 @@ export class PersistenceService {
 	}
 
 	removePinnedApp(app: BridgeInstalledAppInfo) {
-		this.pinnedAppsStore.update((state) => state.filter((a) => a.packageName !== app.packageName));
+		this.pinnedAppsStore.update((state) => state.map((a) => (a?.packageName === app.packageName ? null : a)));
 		this._saveApps();
 	}
 
 	removePinnedDockApp(app: BridgeInstalledAppInfo) {
-		this.pinnedDockAppsStore.update((state) => state.filter((a) => a.packageName !== app.packageName));
+		this.pinnedAppsStore.update((state) => state.map((a) => (a?.packageName === app.packageName ? null : a)));
+		this._saveApps();
+	}
+
+	updateIndex(apps: (BridgeInstalledAppInfo | null)[]) {
+		this.pinnedAppsStore.set(apps);
 		this._saveApps();
 	}
 
@@ -52,7 +58,9 @@ export class PersistenceService {
 	}
 
 	private _saveApps() {
-		localStorage.setItem(PINNED_APPS_KEY, JSON.stringify(this.pinnedAppsStore()));
+		const apps = this.pinnedAppsStore();
+		const serializable = apps.map((app) => app ?? null);
+		localStorage.setItem(PINNED_APPS_KEY, JSON.stringify(serializable));
 		localStorage.setItem(PINNED_DOCK_APPS_KEY, JSON.stringify(this.pinnedDockAppsStore()));
 	}
 
@@ -60,7 +68,7 @@ export class PersistenceService {
 		if (!packageName) {
 			return false;
 		}
-		return this.pinnedAppsStore().some((app) => app.packageName === packageName);
+		return this.pinnedAppsStore().some((app) => app?.packageName === packageName);
 	}
 
 	checkIfDockAppIsPinned(packageName?: string) {

@@ -1,5 +1,5 @@
 @reference "tailwindcss";
 
 :host {
-	@apply flex flex-col px-12 pt-18 text-6xl font-bold text-white;
+	@apply flex items-start justify-between px-12 pt-18;
 }

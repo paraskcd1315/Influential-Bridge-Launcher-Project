@@ -1,21 +1,52 @@
-<div class="flex w-full snap-x snap-mandatory overflow-x-auto px-7 pt-4 whitespace-nowrap">
+<div #scrollContainer class="flex w-full snap-x snap-mandatory overflow-x-auto px-7 pt-4 whitespace-nowrap" [ngStyle]="{ 'touch-action: none': editMode() }">
 	@for (pageNumber of Object.keys(paginatedApps()); track pageNumber) {
-		<div class="mx-4 min-w-full snap-center px-6">
-			<div class="grid grid-cols-4 gap-8">
-				@for (app of paginatedApps()[+pageNumber]; track app) {
-					<button class="justify-cente flex w-full flex-col items-center" (touchstart)="onTouchStart($event)" (touchend)="shouldTriggerTapTouch($event) && openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)">
-						<div class="relative flex w-full items-center justify-center">
-							<div class="flex items-center justify-center rounded-full border-t border-slate-400 p-2 backdrop-blur-2xl">
-								<img [src]="getAppIcon(app.packageName, app.label)" [alt]="app.label" class="w-8 shrink-0 object-contain" />
+		<div class="mx-4 min-w-full snap-center px-4">
+			<div class="grid grid-cols-4 gap-5">
+				@for (app of paginatedApps()[+pageNumber]; track $index) {
+					@if (app) {
+						<button
+							[attr.data-app-index]="(+pageNumber - 1) * 20 + $index"
+							class="flex w-full flex-col items-center justify-center"
+							[ngClass]="{ 'animate-wiggle': editMode() }"
+							(touchstart)="onTouchStart($event, app, $index)"
+							(touchmove)="onTouchMove($event)"
+							(click)="openApp($event, app)"
+							(contextmenu)="onContextMenu($event, app)"
+						>
+							<div class="relative flex w-full items-center justify-center">
+								<div class="flex items-center justify-center rounded-full border-t border-slate-400 p-2 backdrop-blur-2xl" [ngClass]="{ 'ring-2 ring-blue-500/50': dragOverApp()?.packageName === app.packageName }">
+									<img [src]="getAppIcon(app.packageName)" [alt]="app.label" class="w-8 shrink-0 object-contain" />
+								</div>
+								@if (editMode()) {
+									<button class="absolute top-0 -left-3 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-t border-slate-400 bg-white/80 text-black backdrop-blur-2xl" (click)="openDeleteDialog($event, app)">
+										<i class="icon-ic_fluent_dismiss_12_regular mt-1 text-xs"></i>
+									</button>
+								}
+								@if (notifications() && notifications()[app.packageName]) {
+									<div class="absolute top-0 -right-2 h-2 w-2 shrink-0 rounded-full border-t border-slate-400 bg-white/80 backdrop-blur-2xl"></div>
+								}
 							</div>
-							@if (notifications() && notifications()[app.packageName]) {
-								<div class="absolute top-0 -right-2 h-2 w-2 shrink-0 rounded-full border-t border-slate-400 bg-white/80 backdrop-blur-2xl"></div>
-							}
-						</div>
-						<span class="w-14 truncate text-xs text-white">{{ app.label }}</span>
-					</button>
+							<span class="w-14 truncate text-xs text-white">{{ app.label }}</span>
+						</button>
+					} @else {
+						<div
+							class="h-16 w-16 rounded border-2 border-dashed border-white/30"
+							[ngClass]="{ 'animate-fade-in opacity-100': dragOverApp() === null && dropTargetIndex === (+pageNumber - 1) * 20 + $index, 'opacity-0': !(dragOverApp() === null && dropTargetIndex === (+pageNumber - 1) * 20 + $index) }"
+							[attr.data-app-index]="(+pageNumber - 1) * 20 + $index"
+						></div>
+					}
 				}
 			</div>
 		</div>
 	}
 </div>
+<div class="mt-6 flex items-center justify-center">
+	<div class="flex w-1/4 items-center justify-center gap-2 rounded-full border-t border-slate-400 p-2 text-white backdrop-blur-2xl">
+		<i class="icon-ic_fluent_search_12_regular"></i>
+		Search
+	</div>
+</div>
+<div *ngIf="draggedApp()" class="pointer-events-none fixed z-50 flex items-center justify-center rounded-full border-t border-slate-400 p-2 ring-2 ring-blue-500/50 backdrop-blur-2xl" [ngStyle]="getDragStyle()">
+	<img [src]="getAppIcon(draggedApp()?.packageName)" class="w-12" />
+</div>
+<app-dialog />
