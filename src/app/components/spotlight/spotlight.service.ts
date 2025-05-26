@@ -67,9 +67,11 @@ export class SpotlightService {
 
 	openSuggestion(suggestion: string) {
 		this._bridgeService.requestGoogleSearch(suggestion);
+		this.closeSpotlight();
 	}
 
 	openApp(packageName: string) {
 		this._bridgeService.requestLaunchApp(packageName);
+		this.closeSpotlight();
 	}
 }

@@ -40,10 +40,6 @@ export class SpotlightComponent {
 			this.debounceTimeout = setTimeout(() => {
 				this._spotlightService.updateSearchQuery(currentValue);
 			}, 500);
-
-			if (this.isSpotlightActive()) {
-				this.searchInput()?.nativeElement.focus();
-			}
 		});
 	}
 
