@@ -143,6 +143,14 @@ export class BridgeService {
 		this.bridge().requestMediaAppLaunch?.();
 	}
 
+	getGoogleSearchSuggestions(query: string) {
+		return this.bridge().getGoogleSearchSuggestions?.(query);
+	}
+
+	requestGoogleSearch(query: string) {
+		return this.bridge().requestGoogleSearch?.(query);
+	}
+
 	private _injectBridgeMockInDev() {
 		if (!environment.production && !Bridge) {
 			window.Bridge = new BridgeMock();

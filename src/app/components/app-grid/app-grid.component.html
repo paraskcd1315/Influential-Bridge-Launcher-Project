@@ -1,7 +1,7 @@
 <div #scrollContainer class="flex w-full snap-x snap-mandatory overflow-x-auto px-7 pt-4 whitespace-nowrap" [ngStyle]="{ 'touch-action: none': editMode() }">
 	@for (pageNumber of Object.keys(paginatedApps()); track pageNumber) {
 		<div class="mx-4 min-w-full snap-center px-4">
-			<div class="grid grid-cols-4 gap-5">
+			<div class="grid grid-cols-4 gap-8">
 				@for (app of paginatedApps()[+pageNumber]; track $index) {
 					@if (app) {
 						<button
@@ -30,7 +30,7 @@
 						</button>
 					} @else {
 						<div
-							class="h-16 w-16 rounded border-2 border-dashed border-white/30"
+							class="h-16 w-16 rounded border-2 border-dashed border-white/30 shadow-2xl shadow-white/50"
 							[ngClass]="{ 'animate-fade-in opacity-100': dragOverApp() === null && dropTargetIndex === (+pageNumber - 1) * 20 + $index, 'opacity-0': !(dragOverApp() === null && dropTargetIndex === (+pageNumber - 1) * 20 + $index) }"
 							[attr.data-app-index]="(+pageNumber - 1) * 20 + $index"
 						></div>
@@ -39,12 +39,6 @@
 			</div>
 		</div>
 	}
-</div>
-<div class="mt-6 flex items-center justify-center">
-	<div class="flex w-1/4 items-center justify-center gap-2 rounded-full border-t border-slate-400 p-2 text-white backdrop-blur-2xl">
-		<i class="icon-ic_fluent_search_12_regular"></i>
-		Search
-	</div>
 </div>
 <div *ngIf="draggedApp()" class="pointer-events-none fixed z-50 flex items-center justify-center rounded-full border-t border-slate-400 p-2 ring-2 ring-blue-500/50 backdrop-blur-2xl" [ngStyle]="getDragStyle()">
 	<img [src]="getAppIcon(draggedApp()?.packageName)" class="w-12" />

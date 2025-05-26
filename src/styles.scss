@@ -50,3 +50,18 @@ body.dragging .snap-x {
 	overflow-x: hidden !important;
 	touch-action: none !important;
 }
+
+input.clearing {
+	animation: fadeClear 0.3s ease;
+}
+
+@keyframes fadeClear {
+	0% {
+		opacity: 0.5;
+		transform: scale(0.98);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}

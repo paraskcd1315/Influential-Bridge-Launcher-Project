@@ -1,0 +1,38 @@
+<div *ngIf="isSpotlightActive()" class="h-screen w-screen bg-black/40 p-8 pt-16 text-white" [style.opacity]="reveal()" [style.backdropFilter]="'blur(' + reveal() * 40 + 'px)'">
+	<div class="flex flex-col gap-4" [style.transform]="'translateY(' + (reveal() * 100 - 100) + '%)'" [style.pointerEvents]="reveal() === 1 ? 'auto' : 'none'">
+		<div class="flex w-4 w-full flex-col rounded-t-lg border-t border-slate-400 bg-slate-800/20">
+			<div class="flex w-full items-center gap-2 rounded-lg p-2">
+				<mat-icon class="w-full" svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
+				<input #search type="text" class="w-full p-2 outline-none" placeholder="Search..." (input)="searchQuery.set($any($event.target).value)" (keydown.enter)="onEnterPressed()" />
+				@if (searchQuery()) {
+					<mat-icon svgIcon="heroicons_outline:x-mark" (click)="clearSearch()"></mat-icon>
+				}
+			</div>
+			<div class="h-[1px] w-full bg-blue-400"></div>
+		</div>
+		@if (filteredApps().length > 0) {
+			<div class="animate-fade-in flex h-full w-full flex-col gap-4 rounded-lg bg-black/10 p-4">
+				<span class="font-bold">Apps</span>
+				@for (app of filteredApps(); track app.packageName) {
+					<button class="flex items-center gap-2" (click)="openApp(app.packageName)">
+						<img [src]="getAppIcon(app.packageName, app.label)" class="h-8 w-8" [alt]="app.label" />
+						<span class="prevent-select text-start">
+							{{ app.label }}
+						</span>
+					</button>
+				}
+			</div>
+		}
+		@if (suggestions().length > 0) {
+			<div class="animate-fade-in flex h-full w-full flex-col gap-4 rounded-lg bg-black/10 p-4">
+				<span class="font-bold">Suggestions</span>
+				@for (suggestion of suggestions(); track $index; let last = $last) {
+					<button class="flex items-center gap-2" (click)="openSuggestion(suggestion)">
+						<i class="icon-ic_fluent_arrow_trending_24_regular"></i>
+						<span>{{ suggestion }}</span>
+					</button>
+				}
+			</div>
+		}
+	</div>
+</div>

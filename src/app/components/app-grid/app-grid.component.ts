@@ -7,6 +7,7 @@ import { IconsService } from '../../utils/icons/icons.service';
 import { PersistenceService } from '../../utils/persistence/persistence.service';
 import { StatusbarService } from '../../utils/statusbar/statusbar.service';
 import { ContextMenuService } from '../context-menu/context-menu.service';
+import { SpotlightService } from '../spotlight/spotlight.service';
 import { DialogComponent } from './dialog/dialog.component';
 import { DialogService } from './dialog/dialog.service';
 
@@ -17,6 +18,7 @@ import { DialogService } from './dialog/dialog.service';
 	styleUrl: './app-grid.component.scss',
 })
 export class AppGridComponent {
+	private readonly _spotlightService = inject(SpotlightService);
 	private readonly _dialogService = inject(DialogService);
 	private readonly _appGridService = inject(AppGridService);
 	private readonly _statusbarService = inject(StatusbarService);
