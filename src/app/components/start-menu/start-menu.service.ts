@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { BridgeService } from '../../utils/bridge/bridge.service';
+import { PACKAGE_NAME_ALIASES } from '../../utils/constants';
 
 @Injectable({
 	providedIn: 'root',
@@ -33,11 +34,18 @@ export class StartMenuService {
 		const query = this.filter();
 		if (!query && this.apps().length > 0) return this.alphabeticDistributedApps();
 
+		const lowerQuery = query?.toLowerCase() ?? '';
 		const original = this.alphabeticDistributedApps();
-		const filtered: Record<string, (typeof original)[string]> = {};
+		const filtered: Record<string, BridgeInstalledAppInfo[]> = {};
 
 		for (const [letter, apps] of Object.entries(original)) {
-			const matchingApps = apps.filter((app) => app.label.toLowerCase().includes(query!.toLowerCase()));
+			const matchingApps = apps.filter((app) => {
+				const label = app.label.toLowerCase();
+				const labelWords = label.split(/\s+/);
+				const packageAliases = PACKAGE_NAME_ALIASES[app.packageName] || [];
+				return labelWords.some((word) => word.startsWith(lowerQuery)) || packageAliases.some((alias) => alias.startsWith(lowerQuery));
+			});
+
 			if (matchingApps.length > 0) {
 				filtered[letter] = matchingApps;
 			}

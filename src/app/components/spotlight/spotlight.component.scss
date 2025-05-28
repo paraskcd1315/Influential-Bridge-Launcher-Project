@@ -1,0 +1,7 @@
+.spotlight-reveal-wrapper {
+	transition:
+		opacity 80ms ease-out,
+		backdrop-filter 80ms ease-out,
+		transform 80ms ease-out;
+	will-change: opacity, transform, backdrop-filter;
+}

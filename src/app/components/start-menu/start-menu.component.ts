@@ -46,7 +46,7 @@ export class StartMenuComponent {
 						this.searchInput()?.nativeElement?.blur();
 					}
 				}, 0);
-			}, 300);
+			}, 500);
 		});
 	}
 

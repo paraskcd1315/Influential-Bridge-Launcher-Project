@@ -1,4 +1,3 @@
-import { animate, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,12 +9,6 @@ import { SpotlightService } from './spotlight.service';
 	imports: [MatIconModule, CommonModule],
 	templateUrl: './spotlight.component.html',
 	styleUrl: './spotlight.component.scss',
-	animations: [
-		trigger('spotlightAnimation', [
-			transition(':enter', [style({ opacity: 0, transform: 'translateY(20px)' }), animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))]),
-			transition(':leave', [animate('200ms ease-in', style({ opacity: 0, transform: 'translateY(20px)' }))]),
-		]),
-	],
 })
 export class SpotlightComponent {
 	private readonly _spotlightService = inject(SpotlightService);
@@ -40,11 +33,24 @@ export class SpotlightComponent {
 			this.debounceTimeout = setTimeout(() => {
 				this._spotlightService.updateSearchQuery(currentValue);
 			}, 500);
+
+			if (this.reveal() === 1) {
+				setTimeout(() => {
+					this.searchInput()?.nativeElement?.focus();
+				}, 0);
+			} else {
+				this.searchInput()?.nativeElement?.blur();
+			}
+
+			if (!this.isSpotlightActive()) {
+				this.clearSearch();
+			}
 		});
 	}
 
 	openSuggestion(suggestion: string) {
 		this._spotlightService.openSuggestion(suggestion);
+		this.clearSearch();
 	}
 
 	clearSearch() {
@@ -73,6 +79,7 @@ export class SpotlightComponent {
 	}
 
 	openApp(packageName: string) {
+		this.clearSearch();
 		return this._spotlightService.openApp(packageName);
 	}
 
@@ -81,5 +88,6 @@ export class SpotlightComponent {
 			return;
 		}
 		this._spotlightService.openSuggestion(this.searchQuery()!);
+		this.clearSearch();
 	}
 }

@@ -35,6 +35,9 @@ export class AppComponent {
 	private touchStartY = 0;
 	private touchStartX = 0;
 
+	private spotlightProgress = 0;
+	private spotlightFrameRequested = false;
+
 	@HostListener('touchstart', ['$event'])
 	onTouchStart(event: TouchEvent) {
 		this.touchStartY = event.touches[0].clientY;
@@ -45,19 +48,38 @@ export class AppComponent {
 	onTouchMove(event: TouchEvent) {
 		const currentX = event.touches[0].clientX;
 		const deltax = Math.abs(currentX - this.touchStartX);
-		if (deltax > 30) {
-			return;
-		}
 		const currentY = event.touches[0].clientY;
 		const deltaY = currentY - this.touchStartY;
+		const ratio = Math.abs(deltaY) / Math.abs(deltax);
+		if (ratio < 1) {
+			return;
+		}
+		let progress = 0;
 		if (deltaY > 0) {
 			this._spotlightService.openSpotlight();
-			const progress = Math.min(deltaY / 200, 1);
-			this._spotlightService.updateReveal(progress);
+			progress = Math.min(deltaY / 200, 1);
 		} else if (deltaY < 0) {
 			const currentReveal = this._spotlightService.spotlightReveal();
-			const progress = Math.max(currentReveal + deltaY / 200, 0);
-			this._spotlightService.updateReveal(progress);
+			progress = currentReveal + deltaY / 300;
+			progress = Math.max(progress, 0);
+		}
+
+		const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+		progress = easeOut(progress);
+		progress = Math.min(progress, 1);
+
+		this.spotlightProgress = progress;
+
+		if (progress === 0) {
+			this.touchStartY = event.touches[0].clientY;
+		}
+
+		if (!this.spotlightFrameRequested) {
+			this.spotlightFrameRequested = true;
+			requestAnimationFrame(() => {
+				this._spotlightService.updateReveal(this.spotlightProgress);
+				this.spotlightFrameRequested = false;
+			});
 		}
 	}
 
@@ -76,31 +98,40 @@ export class AppComponent {
 		const duration = 200;
 		const start = performance.now();
 
-		if (deltaY > 60) {
-			if (this._spotlightService.spotlightReveal() === 1) return;
+		const revealThreshold = 0.4;
+
+		const currentReveal = this._spotlightService.spotlightReveal();
+
+		if (deltaY > 60 || currentReveal >= revealThreshold) {
 			this._spotlightService.openSpotlight();
+
+			if (currentReveal === 1) return;
+
 			const animateOpen = (now: number) => {
 				const elapsed = now - start;
 				const progress = Math.min(elapsed / duration, 1);
-				this._spotlightService.updateReveal(progress);
+				const value = currentReveal + (1 - currentReveal) * progress;
+				this._spotlightService.updateReveal(value);
 				if (progress < 1) requestAnimationFrame(animateOpen);
 			};
+
 			requestAnimationFrame(animateOpen);
-		} else {
-			// Don't close immediately, animate reveal back to 0
-			const currentReveal = this._spotlightService.spotlightReveal();
-			const animateClose = (now: number) => {
-				const elapsed = now - start;
-				const progress = Math.min(elapsed / duration, 1);
-				this._spotlightService.updateReveal(currentReveal * (1 - progress));
-				if (progress < 1) {
-					requestAnimationFrame(animateClose);
-				} else {
-					this._spotlightService.updateReveal(0);
-					this._spotlightService.closeSpotlight();
-				}
-			};
-			requestAnimationFrame(animateClose);
+			return;
 		}
+
+		const animateClose = (now: number) => {
+			const elapsed = now - start;
+			const progress = Math.min(elapsed / duration, 1);
+			const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+			const value = (1 - easeOut(progress)) * currentReveal;
+			this._spotlightService.updateReveal(value);
+			if (progress < 1) {
+				requestAnimationFrame(animateClose);
+			} else {
+				this._spotlightService.updateReveal(0);
+				this._spotlightService.closeSpotlight();
+			}
+		};
+		requestAnimationFrame(animateClose);
 	}
 }

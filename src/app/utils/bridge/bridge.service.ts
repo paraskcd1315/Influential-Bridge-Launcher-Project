@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { BridgeGetAppsResponse } from '@bridgelauncher/api';
 import { BridgeMock } from '@bridgelauncher/api-mock';
@@ -16,6 +16,9 @@ export class BridgeService {
 
 	constructor() {
 		this._injectBridgeMockInDev();
+		effect(() => {
+			console.log(JSON.stringify(this.apps()));
+		});
 	}
 
 	appsResource = rxResource({
