@@ -40,7 +40,11 @@ export class SpotlightService {
 
 		return this.apps()
 			.filter((app) => {
-				const label = app.label.toLowerCase();
+				const label = app.label.toLowerCase().trim();
+				if (label.startsWith('transcripción instantánea')) {
+					return false;
+				}
+
 				const labelWords = label.split(/\s+/);
 				const packageAliases = PACKAGE_NAME_ALIASES[app.packageName] || [];
 
