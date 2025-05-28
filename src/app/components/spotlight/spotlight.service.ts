@@ -23,10 +23,10 @@ export class SpotlightService {
 
 	suggestions = computed<string[]>(() => {
 		const query = this.searchQuery();
-		if (!query) {
+		if (!query || query.length < 3) {
 			return [];
 		}
-		return JSON.parse(this._bridgeService.getGoogleSearchSuggestions(query) || '[]').slice(0, 5);
+		return JSON.parse(this._bridgeService.getGoogleSearchSuggestions(query) || '[]');
 	});
 
 	filteredApps = computed(() => {
@@ -38,24 +38,35 @@ export class SpotlightService {
 		const lowerQuery = query.toLowerCase();
 		const suggestions = this.suggestions().map((s) => s.toLowerCase());
 
-		return this.apps()
-			.filter((app) => {
-				const label = app.label.toLowerCase().trim();
-				if (label.startsWith('transcripción instantánea')) {
-					return false;
-				}
+		const hasStrongMatch = (app: any) => {
+			const label = app.label.toLowerCase().trim();
+			if (label.startsWith('transcripción instantánea')) {
+				return false;
+			}
 
-				const labelWords = label.split(/\s+/);
-				const packageAliases = PACKAGE_NAME_ALIASES[app.packageName] || [];
+			const labelWords = label.split(/\s+/);
+			const packageAliases = PACKAGE_NAME_ALIASES[app.packageName] || [];
 
-				const labelMatches = labelWords.some((word) => word.startsWith(lowerQuery));
-				const suggestionMatches = suggestions.some((s) => s.split(/\s+/).some((sWord) => labelWords.some((word) => word.startsWith(sWord))));
-				const aliasMatchesQuery = packageAliases.some((alias) => alias.startsWith(lowerQuery));
-				const aliasMatchesSuggestions = packageAliases.some((alias) => suggestions.some((s) => s.includes(alias)));
+			const labelMatches = labelWords.some((word: any) => (lowerQuery.length <= 2 ? word === lowerQuery : word.startsWith(lowerQuery)));
+			const aliasMatchesQuery = packageAliases.some((alias) => (lowerQuery.length <= 2 ? alias === lowerQuery : alias.startsWith(lowerQuery)));
+			const aliasMatchesSuggestions = packageAliases.some((alias) => suggestions.some((s) => s === alias));
 
-				return labelMatches || suggestionMatches || aliasMatchesQuery || aliasMatchesSuggestions;
-			})
-			.slice(0, 5);
+			return labelMatches || aliasMatchesQuery || aliasMatchesSuggestions;
+		};
+
+		// primero buscamos matches fuertes
+		const strongMatches = this.apps().filter(hasStrongMatch);
+
+		// si encontramos matches reales, devolvemos esos
+		if (strongMatches.length > 0) {
+			return strongMatches;
+		}
+
+		// si no, probamos con el caso fallback: sugerencia exacta y alias exacta
+		return this.apps().filter((app) => {
+			const packageAliases = PACKAGE_NAME_ALIASES[app.packageName] || [];
+			return packageAliases.includes(lowerQuery);
+		});
 	});
 
 	constructor() {

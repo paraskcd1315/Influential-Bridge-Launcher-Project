@@ -46,6 +46,11 @@ export class AppComponent {
 
 	@HostListener('touchmove', ['$event'])
 	onTouchMove(event: TouchEvent) {
+		const target = event.target as HTMLElement;
+		if (target.closest('[data-scrollable]')) {
+			return; // Skip spotlight reveal if inside scrollable content
+		}
+
 		const currentX = event.touches[0].clientX;
 		const deltax = Math.abs(currentX - this.touchStartX);
 		const currentY = event.touches[0].clientY;

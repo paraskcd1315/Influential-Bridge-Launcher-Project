@@ -65,3 +65,7 @@ input.clearing {
 		transform: scale(1);
 	}
 }
+
+[data-scrollable] {
+	-webkit-overflow-scrolling: touch;
+}

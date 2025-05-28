@@ -11,7 +11,7 @@
 			<div class="h-[1px] w-full bg-blue-400"></div>
 		</div>
 		@if (filteredApps().length > 0) {
-			<div class="animate-fade-in flex h-full w-full flex-col gap-4 rounded-lg bg-black/10 p-4">
+			<div class="animate-fade-in flex h-full max-h-64 w-full flex-col gap-4 overflow-y-auto rounded-lg bg-black/10 p-4" data-scrollable>
 				<span class="font-bold">Apps</span>
 				@for (app of filteredApps(); track app.packageName) {
 					<button class="flex items-center gap-2" (click)="openApp(app.packageName)">
@@ -26,7 +26,7 @@
 		@if (suggestions().length > 0) {
 			<div class="animate-fade-in flex h-full w-full flex-col gap-4 rounded-lg bg-black/10 p-4">
 				<span class="font-bold">Suggestions</span>
-				@for (suggestion of suggestions(); track $index; let last = $last) {
+				@for (suggestion of suggestions().slice(0, 5); track $index; let last = $last) {
 					<button class="flex items-center gap-2" (click)="openSuggestion(suggestion)">
 						<i class="icon-ic_fluent_arrow_trending_24_regular"></i>
 						<span>{{ suggestion }}</span>
