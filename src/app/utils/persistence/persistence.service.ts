@@ -35,7 +35,7 @@ export class PersistenceService {
 	}
 
 	removePinnedDockApp(app: BridgeInstalledAppInfo) {
-		this.pinnedAppsStore.update((state) => state.map((a) => (a?.packageName === app.packageName ? null : a)));
+		this.pinnedDockAppsStore.update((state) => state.filter((a) => a?.packageName != app.packageName));
 		this._saveApps();
 	}
 
