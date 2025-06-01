@@ -103,4 +103,8 @@ export class TaskbarComponent {
 	onClick(event: MouseEvent) {
 		this._contextMenuService.closeContextMenu();
 	}
+
+	expandNotificationShade() {
+		this._bridgeService.requestExpandNotificationShade();
+	}
 }

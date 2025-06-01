@@ -14,7 +14,7 @@
 							(contextmenu)="onContextMenu($event, app)"
 						>
 							<div class="relative flex w-full items-center justify-center">
-								<div class="flex items-center justify-center rounded-full border-t border-slate-400 p-2 backdrop-blur-2xl" [ngClass]="{ 'ring-2 ring-blue-500/50': dragOverApp()?.packageName === app.packageName }">
+								<div class="appBg flex items-center justify-center rounded-full border-t border-slate-400 p-2 backdrop-blur-2xl" [ngClass]="{ 'ring-2 ring-blue-500/50': dragOverApp()?.packageName === app.packageName }">
 									<img [src]="getAppIcon(app.packageName)" [alt]="app.label" class="w-8 shrink-0 object-contain" />
 								</div>
 								@if (editMode()) {

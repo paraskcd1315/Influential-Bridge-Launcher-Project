@@ -1,7 +1,9 @@
-<div id="statusbar" class="flex items-center justify-end gap-2">
+<button id="statusbar" class="relative z-50 flex items-center justify-end gap-2" (click)="expandNotificationShade()">
 	<i [class]="wifiBars[wifiLevel()]"></i>
 	<div class="flex items-center gap-1">
-		<span class="mb-[5px] text-xs">{{ mobileNetworkType() }}</span>
+		@if (mobileNetworkType() != undefined && mobileNetworkType().length > 0) {
+			<span class="mb-[5px] text-xs">{{ mobileNetworkType() }}</span>
+		}
 		<i [class]="telephonyBars[mobileLevel()]"></i>
 	</div>
 	<div class="flex items-center gap-1">
@@ -12,8 +14,8 @@
 			<i [class]="getBatteryIcon()"></i>
 		}
 	</div>
-</div>
-<div #taskbarRef class="flex items-center justify-between rounded-lg border-t border-slate-400 p-4 shadow-2xl backdrop-blur-2xl">
+</button>
+<div #taskbarRef id="taskbar" class="flex items-center justify-between rounded-lg border-t border-slate-400 p-4 shadow-2xl backdrop-blur-2xl">
 	<div class="flex items-center gap-5">
 		<app-start-button (startEmitter)="openStartMenuEventEmitter.emit()" />
 		<div class="flex w-full gap-x-4 overflow-x-auto whitespace-nowrap">

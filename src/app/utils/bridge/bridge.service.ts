@@ -154,6 +154,10 @@ export class BridgeService {
 		return this.bridge().requestGoogleSearch?.(query);
 	}
 
+	requestExpandNotificationShade() {
+		this.bridge().requestExpandNotificationShade();
+	}
+
 	private _injectBridgeMockInDev() {
 		if (!environment.production && !Bridge) {
 			window.Bridge = new BridgeMock();

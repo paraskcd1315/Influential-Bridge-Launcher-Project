@@ -1,5 +1,5 @@
 <div id="start-menu" class="flex max-h-[calc(100dvh-18rem)] flex-col items-center justify-between gap-4 overflow-y-hidden rounded-lg border-t border-slate-400 px-4 pt-4 text-white shadow-2xl backdrop-blur-2xl" [ngClass]="{ active: active() }">
-	<div class="flex w-4 w-full flex-col rounded-t-lg border-t border-slate-400 bg-slate-800/20">
+	<div class="flex w-4 w-full flex-col rounded-lg border-t border-slate-400 bg-slate-800/20">
 		<div class="flex w-full items-center gap-2 rounded-lg p-2">
 			<mat-icon class="w-full" svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
 			<input #search type="text" class="w-full p-2 outline-none" placeholder="Search Apps..." (input)="searchQuery.set($any($event.target).value)" />
@@ -7,7 +7,6 @@
 				<mat-icon svgIcon="heroicons_outline:x-mark" (click)="clearSearch()"></mat-icon>
 			}
 		</div>
-		<div class="h-[1px] w-full bg-blue-400"></div>
 	</div>
 	<div *ngIf="forceRerender()" class="scroll-anchor-container animate-fade-in relative z-10 flex w-full flex-col gap-3 overflow-y-auto">
 		@for (letter of Object.keys(distributedApps()); track letter) {

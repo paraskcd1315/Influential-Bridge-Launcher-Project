@@ -1,4 +1,6 @@
 import { Component, HostListener, inject } from '@angular/core';
+import { BridgeService } from '../../utils/bridge/bridge.service';
+import { WEATHER_APP } from '../../utils/constants';
 import { WeatherService } from '../../utils/weather/weather.service';
 
 @Component({
@@ -8,6 +10,7 @@ import { WeatherService } from '../../utils/weather/weather.service';
 	styleUrl: './weather.component.scss',
 })
 export class WeatherComponent {
+	private readonly _bridgeService = inject(BridgeService);
 	private readonly _weatherService = inject(WeatherService);
 
 	weatherData = this._weatherService.weatherData;
@@ -25,5 +28,6 @@ export class WeatherComponent {
 	@HostListener('click')
 	refresh() {
 		this._weatherService.reload();
+		this._bridgeService.requestLaunchApp(WEATHER_APP);
 	}
 }
