@@ -1,5 +1,13 @@
 @reference "tailwindcss";
 
 :host {
-	@apply relative flex w-full min-w-full snap-center flex-col px-12 pb-12 text-white;
+	@apply relative flex w-full min-w-full snap-center flex-col px-12 pb-12;
+
+	color: var(--monet-background);
+}
+
+@media (prefers-color-scheme: dark) {
+	:host {
+		color: var(--monet-textPrimary);
+	}
 }

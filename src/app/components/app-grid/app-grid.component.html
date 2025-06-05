@@ -15,7 +15,7 @@
 						>
 							<div class="relative flex w-full items-center justify-center">
 								<div class="appBg flex items-center justify-center rounded-full border-t border-slate-400 p-2 backdrop-blur-2xl" [ngClass]="{ 'ring-2 ring-blue-500/50': dragOverApp()?.packageName === app.packageName }">
-									<img [src]="getAppIcon(app.packageName)" [alt]="app.label" class="w-8 shrink-0 object-contain" />
+									<div [ngStyle]="{ '--icon-url': 'url(' + getAppIcon(app.packageName) + ')' }" class="icon-mask w-8"></div>
 								</div>
 								@if (editMode()) {
 									<button class="absolute top-0 -left-3 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-t border-slate-400 bg-white/80 text-black backdrop-blur-2xl" (click)="openDeleteDialog($event, app)">

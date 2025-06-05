@@ -1,4 +1,5 @@
-import { Component, ElementRef, HostListener, inject, output, viewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, HostListener, inject, output, viewChild } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { BridgeService } from '../../utils/bridge/bridge.service';
 import { IconsService } from '../../utils/icons/icons.service';
@@ -9,12 +10,12 @@ import { StartButtonComponent } from './components/start-button/start-button.com
 
 @Component({
 	selector: 'app-taskbar',
-	imports: [StartButtonComponent],
+	imports: [StartButtonComponent, CommonModule],
 	standalone: true,
 	templateUrl: './taskbar.component.html',
 	styleUrl: './taskbar.component.scss',
 })
-export class TaskbarComponent {
+export class TaskbarComponent implements AfterViewInit {
 	private readonly _statusbarService = inject(StatusbarService);
 	private readonly _iconService = inject(IconsService);
 	private readonly _bridgeService = inject(BridgeService);
@@ -53,7 +54,15 @@ export class TaskbarComponent {
 	mobileNetworkType = this._statusbarService.mobileNetworkType;
 	notifications = this._statusbarService.notificationCounts;
 
-	getAppIcon(packageName: string, label: string) {
+	ngAfterViewInit(): void {
+		const baseAccent = this._bridgeService.getMonetColors().accent.trim() || '#FF6688';
+		document.querySelectorAll('.icon-mask').forEach((el) => {
+			const randomColor = this._accentVariant(baseAccent, 40); // hasta ±40 por canal
+			(el as HTMLElement).style.backgroundColor = randomColor;
+		});
+	}
+
+	getAppIcon(packageName: string) {
 		// Attempt to match any icon filename containing the iconName
 		const matchedIcon = this._iconService.getAppIcon(packageName);
 		if (matchedIcon) {
@@ -106,5 +115,21 @@ export class TaskbarComponent {
 
 	expandNotificationShade() {
 		this._bridgeService.requestExpandNotificationShade();
+	}
+
+	private _accentVariant(base: string, variation: number): string {
+		// Convierte #rrggbb a r, g, b
+		const r = parseInt(base.slice(1, 3), 16);
+		const g = parseInt(base.slice(3, 5), 16);
+		const b = parseInt(base.slice(5, 7), 16);
+
+		// Aplica una variación aleatoria
+		const delta = () => Math.max(0, Math.min(255, Math.floor(Math.random() * variation * 2 - variation)));
+
+		const rV = Math.min(255, r + delta());
+		const gV = Math.min(255, g + delta());
+		const bV = Math.min(255, b + delta());
+
+		return `rgb(${rV}, ${gV}, ${bV})`;
 	}
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { AppGridService } from '../../utils/app-grid/app-grid.service';
 import { BridgeService } from '../../utils/bridge/bridge.service';
@@ -7,7 +7,6 @@ import { IconsService } from '../../utils/icons/icons.service';
 import { PersistenceService } from '../../utils/persistence/persistence.service';
 import { StatusbarService } from '../../utils/statusbar/statusbar.service';
 import { ContextMenuService } from '../context-menu/context-menu.service';
-import { SpotlightService } from '../spotlight/spotlight.service';
 import { DialogComponent } from './dialog/dialog.component';
 import { DialogService } from './dialog/dialog.service';
 
@@ -17,8 +16,7 @@ import { DialogService } from './dialog/dialog.service';
 	templateUrl: './app-grid.component.html',
 	styleUrl: './app-grid.component.scss',
 })
-export class AppGridComponent {
-	private readonly _spotlightService = inject(SpotlightService);
+export class AppGridComponent implements AfterViewInit {
 	private readonly _dialogService = inject(DialogService);
 	private readonly _appGridService = inject(AppGridService);
 	private readonly _statusbarService = inject(StatusbarService);
@@ -80,6 +78,14 @@ export class AppGridComponent {
 
 		return pages;
 	});
+
+	ngAfterViewInit(): void {
+		const baseAccent = this._bridgeService.getMonetColors().accent.trim() || '#FF6688';
+		document.querySelectorAll('.icon-mask').forEach((el) => {
+			const randomColor = this._accentVariant(baseAccent, 40); // hasta ±40 por canal
+			(el as HTMLElement).style.backgroundColor = randomColor;
+		});
+	}
 
 	getAppIcon(packageName?: string) {
 		if (!packageName) {
@@ -296,5 +302,21 @@ export class AppGridComponent {
 			this.dragOverApp.set(null);
 			this.dropTargetIndex = null;
 		}, 300);
+	}
+
+	private _accentVariant(base: string, variation: number): string {
+		// Convierte #rrggbb a r, g, b
+		const r = parseInt(base.slice(1, 3), 16);
+		const g = parseInt(base.slice(3, 5), 16);
+		const b = parseInt(base.slice(5, 7), 16);
+
+		// Aplica una variación aleatoria
+		const delta = () => Math.max(0, Math.min(255, Math.floor(Math.random() * variation * 2 - variation)));
+
+		const rV = Math.min(255, r + delta());
+		const gV = Math.min(255, g + delta());
+		const bV = Math.min(255, b + delta());
+
+		return `rgb(${rV}, ${gV}, ${bV})`;
 	}
 }
