@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { BridgeGetAppsResponse } from '@bridgelauncher/api';
 import { BridgeMock } from '@bridgelauncher/api-mock';
 import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { IMonetColors } from './monet.types';
 const { Bridge } = window as any;
 
 @Injectable({
@@ -16,9 +17,7 @@ export class BridgeService {
 
 	constructor() {
 		this._injectBridgeMockInDev();
-		effect(() => {
-			console.log(JSON.stringify(this.apps()));
-		});
+		console.log(this.getMonetColors());
 	}
 
 	appsResource = rxResource({
@@ -156,6 +155,14 @@ export class BridgeService {
 
 	requestExpandNotificationShade() {
 		this.bridge().requestExpandNotificationShade();
+	}
+
+	getMonetColors(): IMonetColors {
+		return JSON.parse(this.bridge().getMonetPaletteJson());
+	}
+
+	requestOpenDeveloperConsole() {
+		this.bridge().requestOpenDeveloperConsole();
 	}
 
 	private _injectBridgeMockInDev() {

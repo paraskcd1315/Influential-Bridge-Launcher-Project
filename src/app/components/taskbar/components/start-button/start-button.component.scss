@@ -8,7 +8,17 @@
 		border-color: var(--color-slate-400);
 
 		div {
-			@apply bg-gray-300;
+			background-color: rgba(var(--monet-accent-rgb), 0.8);
+			&:first-child {
+				background-color: rgba(var(--monet-accent-rgb), 0.8);
+			}
+		}
+	}
+
+	div {
+		background-color: rgba(var(--monet-accent-rgb), 0.5);
+		&:first-child {
+			background-color: rgba(var(--monet-accent-rgb), 0.9);
 		}
 	}
 }

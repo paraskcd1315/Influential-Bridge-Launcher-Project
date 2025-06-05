@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, inject } from '@angular/core';
+import { AfterViewInit, Component, HostListener, inject, Renderer2 } from '@angular/core';
 import { AppGridComponent } from './components/app-grid/app-grid.component';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 import { DateComponent } from './components/date/date.component';
@@ -10,6 +10,7 @@ import { StartMenuComponent } from './components/start-menu/start-menu.component
 import { StartMenuService } from './components/start-menu/start-menu.service';
 import { TaskbarComponent } from './components/taskbar/taskbar.component';
 import { WeatherComponent } from './components/weather/weather.component';
+import { BridgeService } from './utils/bridge/bridge.service';
 import { HomescreenService } from './utils/homescreen/homescreen.service';
 
 @Component({
@@ -19,10 +20,16 @@ import { HomescreenService } from './utils/homescreen/homescreen.service';
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
+	private readonly _bridgeService = inject(BridgeService);
 	private readonly _spotlightService = inject(SpotlightService);
 	private readonly _homescreenService = inject(HomescreenService);
 	private readonly _startMenuService = inject(StartMenuService);
+	private readonly _rendererService = inject(Renderer2);
+
+	ngAfterViewInit(): void {
+		this._injectMonetColorsToCss();
+	}
 
 	wallpaper = this._homescreenService.wallpaper;
 
@@ -138,5 +145,23 @@ export class AppComponent {
 			}
 		};
 		requestAnimationFrame(animateClose);
+	}
+
+	private _injectMonetColorsToCss() {
+		const palette = this._bridgeService.getMonetColors(); // Esto debe ser un objeto con las claves: accent, background, textPrimary
+		if (!palette) return;
+
+		for (const [key, value] of Object.entries(palette)) {
+			const hex = value;
+			const rgb = this._hexToRgb(hex);
+			document.documentElement.style.setProperty(`--monet-${key}`, value);
+			document.documentElement.style.setProperty(`--monet-${key}-rgb`, rgb);
+		}
+	}
+
+	private _hexToRgb(hex: string): string {
+		const match = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+		if (!match) return '0,0,0';
+		return `${parseInt(match[1], 16)},${parseInt(match[2], 16)},${parseInt(match[3], 16)}`;
 	}
 }
