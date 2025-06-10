@@ -5,6 +5,7 @@ import { BridgeGetAppsResponse } from '@bridgelauncher/api';
 import { BridgeMock } from '@bridgelauncher/api-mock';
 import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ICalendar } from './calendar.types';
 import { IMonetColors } from './monet.types';
 const { Bridge } = window as any;
 
@@ -17,12 +18,35 @@ export class BridgeService {
 
 	constructor() {
 		this._injectBridgeMockInDev();
-		console.log(this.getMonetColors());
 	}
 
 	appsResource = rxResource({
 		request: () => ({ bridge: this.bridge() }),
 		loader: ({ request }) => this._httpClient.get(request.bridge.getAppsURL()).pipe(map((x) => (x as BridgeGetAppsResponse).apps)),
+	});
+
+	calendarMonthlyResource = rxResource({
+		request: () => ({ bridge: this.bridge() }),
+		loader: ({ request }) => {
+			const now = new Date();
+			const from = new Date(now.getFullYear(), now.getMonth(), 1);
+			from.setHours(0, 0, 0, 0);
+			const to = new Date(from);
+			to.setMonth(to.getMonth() + 1);
+			return this._httpClient.get<ICalendar[]>(`${request.bridge.getCalendarUrl()}?from=${from.toISOString()}&to=${to.toISOString()}`);
+		},
+	});
+
+	calendarDailyResponse = rxResource({
+		request: () => ({ bridge: this.bridge() }),
+		loader: ({ request }) => {
+			const from = new Date();
+			from.setHours(0, 0, 0, 0);
+
+			const to = new Date(from);
+			to.setDate(to.getDate() + 1);
+			return this._httpClient.get<ICalendar[]>(`${request.bridge.getCalendarUrl()}?from=${from.toISOString()}&to=${to.toISOString()}`);
+		},
 	});
 
 	apps = computed(() => {

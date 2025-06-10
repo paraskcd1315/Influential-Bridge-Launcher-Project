@@ -71,13 +71,192 @@ input.clearing {
 	-webkit-overflow-scrolling: touch;
 }
 
-.appBg,
 #start-menu,
+#spotlight {
+	position: relative;
+	--border-width: 1px;
+	background: $noise, linear-gradient(-75deg, rgba(var(--monet-background-rgb), 0.01), rgba(var(--monet-background-rgb), 0.1), rgba(var(--monet-background-rgb), 0.01), rgba(var(--monet-background-rgb), 0.05));
+	border-radius: 2rem;
+
+	&:before {
+		content: '';
+		position: absolute;
+		backdrop-filter: blur(clamp(24px, 0.125em, 4px));
+		-webkit-backdrop-filter: blur(clamp(24px, 0.125em, 4px));
+		-moz-backdrop-filter: blur(clamp(24px, 0.125em, 4px));
+		-ms-backdrop-filter: blur(clamp(24px, 0.125em, 4px));
+		z-index: 0;
+		inset: 0;
+		filter: url(#glass-distortion);
+		overflow: hidden;
+		isolation: isolate;
+		border-radius: 2rem;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		z-index: 1;
+		inset: 0;
+		border-radius: 2rem;
+		width: calc(100% + var(--border-width));
+		height: calc(100% + var(--border-width));
+		top: calc(0% - var(--border-width) / 2);
+		left: calc(0% - var(--border-width) / 2);
+		padding: var(--border-width);
+		box-sizing: border-box;
+		background:
+			conic-gradient(from var(--angle-1) at 50% 50%, rgba(var(--monet-accent-rgb), 0.5), rgba(var(--monet-accent-rgb), 0) 5% 40%, rgba(var(--monet-accent-rgb), 0.5) 50%, rgba(var(--monet-accent-rgb), 0) 60% 95%, rgba(var(--monet-accent-rgb), 0.5)),
+			linear-gradient(180deg, rgba(var(--monet-background-rgb), 0.25), rgba(var(--monet-background-rgb), 0.25));
+		mask:
+			linear-gradient(#000 0 0) content-box,
+			linear-gradient(#000 0 0);
+		mask-composite: exclude;
+		box-shadow: inset 0 0 0 rgba(var(--monet-background-rgb), 0.342);
+	}
+}
+
+.container {
+	--border-width: 1px;
+	position: relative;
+	z-index: 60;
+	background: $noise, linear-gradient(-75deg, rgba(var(--monet-accent-rgb), 0.01), rgba(var(--monet-accent-rgb), 0.2), rgba(var(--monet-accent-rgb), 0.05));
+	border-radius: 2rem;
+
+	&::after {
+		content: '';
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		border-radius: 2rem;
+		width: calc(100% + var(--border-width));
+		height: calc(100% + var(--border-width));
+		top: calc(0% - var(--border-width) / 2);
+		left: calc(0% - var(--border-width) / 2);
+		padding: var(--border-width);
+		box-sizing: border-box;
+		background:
+			conic-gradient(from var(--angle-1) at 50% 50%, rgba(var(--monet-accent-rgb), 0.5), rgba(var(--monet-accent-rgb), 0) 5% 40%, rgba(var(--monet-accent-rgb), 0.5) 50%, rgba(var(--monet-accent-rgb), 0) 60% 95%, rgba(var(--monet-accent-rgb), 0.5)),
+			linear-gradient(180deg, rgba(var(--monet-background-rgb), 0.25), rgba(var(--monet-background-rgb), 0.25));
+		mask:
+			linear-gradient(#000 0 0) content-box,
+			linear-gradient(#000 0 0);
+		mask-composite: exclude;
+		box-shadow: inset 0 0 0 rgba(var(--monet-background-rgb), 0.342);
+	}
+}
+
+.inputContainer {
+	position: relative;
+	--border-width: 1px;
+	background: $noise, linear-gradient(-75deg, rgba(var(--monet-accent-rgb), 0.01), rgba(var(--monet-accent-rgb), 0.2), rgba(var(--monet-accent-rgb), 0.05));
+	border-radius: 2rem;
+
+	&::after {
+		content: '';
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		border-radius: 2rem;
+		width: calc(100% + var(--border-width));
+		height: calc(100% + var(--border-width));
+		top: calc(0% - var(--border-width) / 2);
+		left: calc(0% - var(--border-width) / 2);
+		padding: var(--border-width);
+		box-sizing: border-box;
+		background:
+			conic-gradient(from var(--angle-1) at 50% 50%, rgba(var(--monet-accent-rgb), 0.5), rgba(var(--monet-accent-rgb), 0) 5% 40%, rgba(var(--monet-accent-rgb), 0.5) 50%, rgba(var(--monet-accent-rgb), 0) 60% 95%, rgba(var(--monet-accent-rgb), 0.5)),
+			linear-gradient(180deg, rgba(var(--monet-background-rgb), 0.25), rgba(var(--monet-background-rgb), 0.25));
+		mask:
+			linear-gradient(#000 0 0) content-box,
+			linear-gradient(#000 0 0);
+		mask-composite: exclude;
+		box-shadow: inset 0 0 0 rgba(var(--monet-background-rgb), 0.342);
+	}
+}
+
+.appBg,
 #contextMenu,
 #mediaPlayer,
-#spotlight,
 #taskbar,
 #weather {
-	background-image: $noise;
-	background-color: rgba(var(--monet-background-rgb), 0.2);
+	--border-width: 1px;
+	cursor: pointer;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	z-index: 3;
+	background: $noise, linear-gradient(-75deg, rgba(var(--monet-background-rgb), 0.05), rgba(var(--monet-background-rgb), 0.15), rgba(var(--monet-background-rgb), 0.05), rgba(var(--monet-background-rgb), 0.05));
+	border-radius: 2rem;
+	padding: 1rem;
+
+	&:before {
+		content: '';
+		position: absolute;
+		z-index: 0;
+		inset: 0;
+		backdrop-filter: blur(clamp(24px, 0.125em, 4px));
+		-webkit-backdrop-filter: blur(clamp(24px, 0.125em, 4px));
+		-moz-backdrop-filter: blur(clamp(24px, 0.125em, 4px));
+		-ms-backdrop-filter: blur(clamp(24px, 0.125em, 4px));
+		filter: url(#glass-distortion);
+		overflow: hidden;
+		isolation: isolate;
+		border-radius: 2rem;
+		width: 100%;
+		height: 100%;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		z-index: 1;
+		inset: 0;
+		border-radius: 2rem;
+		width: calc(100% + var(--border-width));
+		height: calc(100% + var(--border-width));
+		top: calc(0% - var(--border-width) / 2);
+		left: calc(0% - var(--border-width) / 2);
+		padding: var(--border-width);
+		box-sizing: border-box;
+		background:
+			conic-gradient(from var(--angle-1) at 50% 50%, rgba(var(--monet-accent-rgb), 0.5), rgba(var(--monet-accent-rgb), 0) 5% 40%, rgba(var(--monet-accent-rgb), 0.5) 50%, rgba(var(--monet-accent-rgb), 0) 60% 95%, rgba(var(--monet-accent-rgb), 0.5)),
+			linear-gradient(180deg, rgba(var(--monet-background-rgb), 0.25), rgba(var(--monet-background-rgb), 0.25));
+		mask:
+			linear-gradient(#000 0 0) content-box,
+			linear-gradient(#000 0 0);
+		mask-composite: exclude;
+		box-shadow: inset 0 0 0 rgba(var(--monet-background-rgb), 0.342);
+	}
+}
+
+#weather,
+#mediaPlayer {
+	padding-top: 1.6rem;
+	padding-bottom: 1.6rem;
+}
+
+.appBg {
+	padding: 0.7rem;
+}
+
+.appBg,
+.appBg::after,
+.appBg::before {
+	border-radius: 99rem;
+}
+
+/* Defs */
+@property --angle-1 {
+	syntax: '<angle>';
+	inherits: false;
+	initial-value: -75deg;
+}
+
+@property --angle-2 {
+	syntax: '<angle>';
+	inherits: false;
+	initial-value: -45deg;
+}
+
+:root {
+	transition: --angle-1 0.4s ease;
 }
