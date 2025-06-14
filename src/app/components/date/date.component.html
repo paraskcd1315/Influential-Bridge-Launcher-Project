@@ -1,7 +1,7 @@
-<div id="date" class="flex flex-col text-7xl font-bold">
+<div id="date" class="flex flex-col text-7xl font-bold text-shadow-lg">
 	<span>{{ isoDate | date: 'HH:mm' }}</span>
 	<span class="text-xl font-normal">{{ isoDate | date: 'dd MMMM, YYYY' }}</span>
 </div>
 @if (editModeEnabled()) {
-	<button id="cancelButton" class="animate-fade-in flex items-center justify-center rounded-full border-t border-slate-400 p-2 backdrop-blur-2xl" (click)="cancelEditMode($event)">Cancel</button>
+	<button id="cancelButton" class="animate-fade-in container flex w-16 items-center justify-center rounded-full p-2 backdrop-blur-2xl" (click)="cancelEditMode($event)">Cancel</button>
 }

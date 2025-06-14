@@ -1,4 +1,4 @@
-<button id="statusbar" class="relative z-50 flex items-center justify-end gap-2" (click)="expandNotificationShade()">
+<button id="statusbar" class="relative z-50 flex items-center justify-end gap-2 text-shadow-lg" (click)="expandNotificationShade()">
 	<i [class]="wifiBars[wifiLevel()]"></i>
 	<div class="flex items-center gap-1">
 		@if (mobileNetworkType() != undefined && mobileNetworkType().length > 0) {

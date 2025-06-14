@@ -20,12 +20,12 @@ export class BridgeService {
 		this._injectBridgeMockInDev();
 	}
 
-	appsResource = rxResource({
+	private readonly appsResource = rxResource({
 		request: () => ({ bridge: this.bridge() }),
 		loader: ({ request }) => this._httpClient.get(request.bridge.getAppsURL()).pipe(map((x) => (x as BridgeGetAppsResponse).apps)),
 	});
 
-	calendarMonthlyResource = rxResource({
+	private readonly calendarMonthlyResource = rxResource({
 		request: () => ({ bridge: this.bridge() }),
 		loader: ({ request }) => {
 			const now = new Date();
@@ -37,20 +37,12 @@ export class BridgeService {
 		},
 	});
 
-	calendarDailyResponse = rxResource({
-		request: () => ({ bridge: this.bridge() }),
-		loader: ({ request }) => {
-			const from = new Date();
-			from.setHours(0, 0, 0, 0);
-
-			const to = new Date(from);
-			to.setDate(to.getDate() + 1);
-			return this._httpClient.get<ICalendar[]>(`${request.bridge.getCalendarUrl()}?from=${from.toISOString()}&to=${to.toISOString()}`);
-		},
-	});
-
 	apps = computed(() => {
 		return this.appsResource.value()?.sort((x, y) => x.label.localeCompare(y.label)) ?? [];
+	});
+
+	calendarMonhlyData = computed(() => {
+		return this.calendarMonthlyResource.value() ?? ([] as ICalendar[]);
 	});
 
 	getBatteryLevel() {

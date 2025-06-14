@@ -1,11 +1,43 @@
 @reference "tailwindcss";
 
 :host {
-	@apply grid aspect-square shrink-0 grid-cols-2 gap-[1px] rounded border-t border-transparent p-3;
+	@apply relative grid aspect-square h-12 w-12 shrink-0 grid-cols-2 gap-[1px] p-3;
+	border-radius: 2rem;
 
 	&.active {
+		--border-width: 1px;
+		background: linear-gradient(-75deg, rgba(var(--monet-accent-rgb), 0.05), rgba(var(--monet-accent-rgb), 0.15), rgba(var(--monet-accent-rgb), 0.05), rgba(var(--monet-accent-rgb), 0.05));
 		transition: all 250ms ease;
-		border-color: var(--color-slate-400);
+		border-radius: 1rem;
+
+		&::after {
+			content: '';
+			position: absolute;
+			z-index: 1;
+			inset: 0;
+			border-radius: 1rem;
+			width: calc(100% + var(--border-width));
+			height: calc(100% + var(--border-width));
+			top: calc(0% - var(--border-width) / 2);
+			left: calc(0% - var(--border-width) / 2);
+			padding: var(--border-width);
+			box-sizing: border-box;
+			background:
+				conic-gradient(
+					from var(--angle-1) at 50% 50%,
+					rgba(var(--monet-accent-rgb), 0.25),
+					rgba(var(--monet-accent-rgb), 0) 5% 40%,
+					rgba(var(--monet-accent-rgb), 0.25) 50%,
+					rgba(var(--monet-accent-rgb), 0) 60% 95%,
+					rgba(var(--monet-accent-rgb), 0.25)
+				),
+				linear-gradient(180deg, rgba(var(--monet-background-rgb), 0.25), rgba(var(--monet-background-rgb), 0.25));
+			mask:
+				linear-gradient(#000 0 0) content-box,
+				linear-gradient(#000 0 0);
+			mask-composite: exclude;
+			box-shadow: inset 0 0 0 rgba(var(--monet-background-rgb), 0.342);
+		}
 
 		div {
 			background-color: rgba(var(--monet-accent-rgb), 0.8);

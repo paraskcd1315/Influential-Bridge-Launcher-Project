@@ -1,49 +1,103 @@
-<div id="start-menu" class="flex max-h-[calc(100dvh-18rem)] flex-col items-center justify-between gap-4 overflow-y-hidden rounded-lg px-4 pt-4 text-white shadow-2xl backdrop-blur-2xl" [ngClass]="{ active: active() }">
-	<div class="inputContainer flex w-4 w-full flex-col rounded-lg bg-slate-800/20">
-		<div class="flex w-full items-center gap-2 rounded-lg p-2">
-			<mat-icon class="w-full" svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
-			<input #search type="text" class="w-full p-2 outline-none" placeholder="Search Apps..." (input)="searchQuery.set($any($event.target).value)" />
-			@if (searchQuery()) {
-				<mat-icon svgIcon="heroicons_outline:x-mark" (click)="clearSearch()"></mat-icon>
-			}
-		</div>
+<div id="start-menu" class="flex max-h-[calc(100dvh-15rem)] flex-col items-center justify-between gap-4 overflow-y-hidden rounded-lg px-4 pt-4 text-white shadow-2xl backdrop-blur-2xl" [ngClass]="{ active: active() }">
+	<div class="container mb-1 flex w-full items-center justify-center rounded-2xl">
+		<button [class.container]="selectedTab() === startMenuTab.Apps" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Apps)">Apps</button>
+		<button [class.container]="selectedTab() === startMenuTab.Calendar" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Calendar)">Calendar</button>
 	</div>
-	<div *ngIf="forceRerender()" class="scroll-anchor-container animate-fade-in relative z-10 flex w-full flex-col gap-3 overflow-y-auto">
-		@for (letter of Object.keys(distributedApps()); track letter) {
-			<div class="flex flex-col gap-2 pb-2">
-				<button [id]="letter" class="w-full pl-2.5 text-left text-xl font-semibold uppercase">
-					<span class="prevent-select">{{ letter }}</span>
-				</button>
-				@for (app of distributedApps()[letter]; track app) {
-					<button class="flex items-center gap-2" (click)="openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)">
-						<img [src]="getAppIcon(app.packageName, app.label)" class="h-8 w-8" [alt]="app.label" />
-						<span class="prevent-select text-start">
-							{{ app.label }}
+	<div #scrollAnchorContainer *ngIf="forceRerender()" class="scroll-anchor-container animate-fade-in relative z-10 flex w-full flex-col gap-3 overflow-y-auto">
+		@switch (selectedTab()) {
+			@case (startMenuTab.Apps) {
+				<div #appHeader class="sticky top-0 flex justify-between rounded-2xl">
+					<div class="inputContainer flex w-4 w-full flex-col rounded-lg bg-slate-800/20">
+						<div class="flex w-full items-center gap-2 rounded-lg p-2">
+							<mat-icon class="w-full" svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
+							<input #search type="text" class="w-full p-2 outline-none" placeholder="Search..." (input)="searchQuery.set($any($event.target).value)" />
+							@if (searchQuery()) {
+								<mat-icon svgIcon="heroicons_outline:x-mark" (click)="clearSearch()"></mat-icon>
+							}
+						</div>
+					</div>
+				</div>
+				<div class="flex flex-col">
+					@for (letter of Object.keys(distributedApps()); track letter) {
+						<div class="flex flex-col gap-2 px-4 pb-2">
+							<button #letterHeader [id]="letter" class="blur-transition w-full pl-2.5 text-left text-xl font-semibold uppercase" [class.blur]="blurredLetters[letter]">
+								<span class="prevent-select">{{ letter }}</span>
+							</button>
+							@for (app of distributedApps()[letter]; track app) {
+								<button #appButton [id]="app.packageName" class="blur-transition flex items-center gap-2" (click)="openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)" [class.blur]="blurredApps[app.packageName]">
+									<img [src]="getAppIcon(app.packageName, app.label)" class="h-8 w-8" [alt]="app.label" />
+									<span class="prevent-select text-start">
+										{{ app.label }}
+									</span>
+								</button>
+							}
+						</div>
+					}
+				</div>
+				<div
+					#letterSidebar
+					class="fixed right-2 z-50 mt-12 flex flex-col items-center space-y-1 text-sm font-bold text-white"
+					(mousedown)="startDrag($event)"
+					(touchstart)="startDrag($event)"
+					(mousemove)="onDrag($event)"
+					(touchmove)="onDrag($event)"
+					(mouseup)="endDrag()"
+					(touchend)="endDrag()"
+				>
+					@for (letter of Object.keys(distributedApps()); track letter) {
+						<span class="prevent-select cursor-pointer select-none" [attr.data-letter]="letter">
+							{{ letter }}
 						</span>
-					</button>
-				}
-			</div>
-		}
-		<div
-			#letterSidebar
-			class="fixed right-2 z-50 flex flex-col items-center space-y-1 text-sm font-bold text-white"
-			(mousedown)="startDrag($event)"
-			(touchstart)="startDrag($event)"
-			(mousemove)="onDrag($event)"
-			(touchmove)="onDrag($event)"
-			(mouseup)="endDrag()"
-			(touchend)="endDrag()"
-		>
-			@for (letter of Object.keys(distributedApps()); track letter) {
-				<span class="prevent-select cursor-pointer select-none" [attr.data-letter]="letter">
-					{{ letter }}
-				</span>
+					}
+				</div>
 			}
-		</div>
+			@case (startMenuTab.Calendar) {
+				<div #calendarHeader class="sticky top-0 z-10 flex justify-between px-2 py-4">
+					<div class="flex items-center gap-4">
+						<button (click)="previousDay()" [disabled]="isAtStartOfMonth">
+							<mat-icon svgIcon="heroicons_outline:chevron-left" />
+						</button>
+						<button class="flex flex-col items-start" (click)="currentDay()">
+							<span class="text-4xl font-bold">{{ selectedDate() | date: 'EEEE' }}</span>
+							<span class="text-3xl">{{ selectedDate() | date: 'MMMM d, YYYY' }}</span>
+						</button>
+					</div>
+					<button (click)="nextDay()" [disabled]="isAtEndOfMonth">
+						<mat-icon svgIcon="heroicons_outline:chevron-right" />
+					</button>
+				</div>
+				<div #allDay class="relative z-5 flex flex-col px-2">
+					@for (event of allDayCalendarEvents(); track event.id; let i = $index) {
+						<div #allDayBlock class="blur-transition container mb-2 p-4" [class.blur]="blurredAllDay[i]">
+							{{ event.title }}
+						</div>
+					}
+				</div>
+				<div #hours class="relative flex flex-col px-2">
+					@for (hourKey of Object.keys(hourlyDistributedEvents()); track hourKey) {
+						<div class="relative min-h-[85px] py-2 pl-2">
+							<!-- Hora -->
+							<div #hourBlock class="blur-transition relative w-[4rem] shrink-0 pt-1 pr-2 text-right text-xs text-white/50" [class.blur]="blurredHours[hourKey]">
+								{{ hourKey }}
+							</div>
+							<div class="blur-transition absolute top-0 right-0 left-0 h-[1px] bg-white/10" [class.blur]="blurredHourBorders[hourKey]"></div>
+							<!-- Eventos -->
+							@for (event of hourlyDistributedEvents()[hourKey]; track event.id) {
+								<div class="events overflow-hidden rounded px-3 text-sm text-white shadow-md text-shadow-lg" [ngStyle]="mergeEventStyles(event, hourKey)" [attr.data-event-id]="event.id">
+									{{ event.title }}
+									<br />
+									<span class="text-xs text-white/70"> {{ event.startTime | date: 'HH:mm' }} → {{ event.endTime | date: 'HH:mm' }} </span>
+								</div>
+							}
+						</div>
+					}
+				</div>
+			}
+		}
 	</div>
 </div>
-@if (activeLetter()) {
-	<div class="animate-fade-in prevent-select pointer-events-none absolute top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform rounded-lg p-4 text-5xl font-bold text-white backdrop-blur-2xl">
+@if (activeLetter() && selectedTab() === startMenuTab.Apps) {
+	<div class="activeLetter animate-fade-in prevent-select pointer-events-none absolute top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform rounded-lg p-4 text-5xl font-bold text-white backdrop-blur-2xl">
 		{{ activeLetter() }}
 	</div>
 }

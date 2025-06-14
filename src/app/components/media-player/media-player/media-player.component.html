@@ -1,4 +1,4 @@
-<div id="mediaPlayer" class="flex w-full items-center overflow-hidden rounded-lg px-6 py-8 shadow-2xl backdrop-blur-2xl">
+<div id="mediaPlayer" class="relative flex w-full items-center overflow-hidden rounded-lg px-6 py-8 shadow-2xl backdrop-blur-2xl">
 	@if (media().artworkBase64) {
 		<div class="absolute inset-0 -z-10">
 			<img class="h-full w-full object-cover opacity-20 blur-lg filter" [src]="getMediaThumbnail(media().artworkBase64)" alt="" />
@@ -23,19 +23,19 @@
 			</div>
 		}
 	</div>
-	<div class="relative flex items-center gap-2">
+	<div class="relative z-50 flex items-center gap-2">
 		@if (isPlaying()) {
-			<button (click)="previous($event)">
+			<button class="animate-fade-in" (click)="previous($event)">
 				<i class="icon-ic_fluent_previous_48_regular text-2xl"></i>
 			</button>
-			<button (click)="pause($event)">
+			<button class="animate-fade-in" (click)="pause($event)">
 				<i class="icon-ic_fluent_pause_48_regular text-5xl"></i>
 			</button>
-			<button (click)="skip($event)">
+			<button class="animate-fade-in" (click)="skip($event)">
 				<i class="icon-ic_fluent_next_48_regular text-2xl"></i>
 			</button>
 		} @else {
-			<button (click)="play($event)">
+			<button class="animate-fade-in" (click)="play($event)">
 				<i class="icon-ic_fluent_play_48_regular text-5xl"></i>
 			</button>
 		}
