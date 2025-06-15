@@ -6,6 +6,7 @@ import { BridgeService } from '../../utils/bridge/bridge.service';
 import { IconsService } from '../../utils/icons/icons.service';
 import { PersistenceService } from '../../utils/persistence/persistence.service';
 import { StatusbarService } from '../../utils/statusbar/statusbar.service';
+import { TouchStateService } from '../../utils/touch-state/touch-state.service';
 import { ContextMenuService } from '../context-menu/context-menu.service';
 import { DialogComponent } from './dialog/dialog.component';
 import { DialogService } from './dialog/dialog.service';
@@ -24,6 +25,7 @@ export class AppGridComponent implements AfterViewInit {
 	private readonly _bridgeService = inject(BridgeService);
 	private readonly _iconService = inject(IconsService);
 	private readonly _persistenceService = inject(PersistenceService);
+	private readonly _touchState = inject(TouchStateService);
 
 	draggedApp = signal<BridgeInstalledAppInfo | null>(null);
 	draggedIndex = signal<number | null>(null);
@@ -80,11 +82,19 @@ export class AppGridComponent implements AfterViewInit {
 	});
 
 	ngAfterViewInit(): void {
-		const baseAccent = this._bridgeService.getMonetColors().accent.trim() || '#FF6688';
-		document.querySelectorAll('.icon-mask').forEach((el) => {
-			const randomColor = this._accentVariant(baseAccent, 40); // hasta ±40 por canal
-			(el as HTMLElement).style.backgroundColor = randomColor;
-		});
+		this._initializeScrollContainer();
+	}
+
+	hasMatchedIcon(packageName?: string): boolean {
+		if (!packageName) {
+			return false;
+		}
+		const matchedIcon = this._iconService.getAppIcon(packageName);
+		if (matchedIcon) {
+			return true;
+		}
+
+		return false;
 	}
 
 	getAppIcon(packageName?: string) {
@@ -213,7 +223,10 @@ export class AppGridComponent implements AfterViewInit {
 			apps[toIndex] = dragged;
 			apps[fromIndex] = temp;
 
-			this._persistenceService.updateIndex(apps);
+			this._persistenceService.updateIndex([...apps]);
+			if (dragged) {
+				this._refreshIconAt(toIndex, dragged.packageName);
+			}
 		}
 
 		this.draggedApp.set(null);
@@ -304,19 +317,37 @@ export class AppGridComponent implements AfterViewInit {
 		}, 300);
 	}
 
-	private _accentVariant(base: string, variation: number): string {
-		// Convierte #rrggbb a r, g, b
-		const r = parseInt(base.slice(1, 3), 16);
-		const g = parseInt(base.slice(3, 5), 16);
-		const b = parseInt(base.slice(5, 7), 16);
+	private _initializeScrollContainer() {
+		const container = this.scrollContainer()?.nativeElement;
+		if (container) {
+			let timeout: any;
 
-		// Aplica una variación aleatoria
-		const delta = () => Math.max(0, Math.min(255, Math.floor(Math.random() * variation * 2 - variation)));
+			container.addEventListener('scroll', () => {
+				this._touchState.isGridScrollingHorizontally.set(true);
+				clearTimeout(timeout);
+				timeout = setTimeout(() => {
+					this._touchState.isGridScrollingHorizontally.set(false);
+				}, 250); // se apaga cuando deja de hacer scroll
+			});
+			return;
+		}
 
-		const rV = Math.min(255, r + delta());
-		const gV = Math.min(255, g + delta());
-		const bV = Math.min(255, b + delta());
+		setTimeout(() => {
+			this._initializeScrollContainer();
+		}, 500);
+	}
 
-		return `rgb(${rV}, ${gV}, ${bV})`;
+	private _refreshIconAt(index: number, packageName: string) {
+		requestAnimationFrame(() => {
+			const targetEl = document.querySelector(`[data-app-index="${index}"] .icon-mask`) as HTMLElement;
+			if (targetEl) {
+				const iconUrl = `url(${this.getAppIcon(packageName)})`;
+				targetEl.style.setProperty('--icon-url', iconUrl);
+			}
+		});
+	}
+
+	trackApp(index: number, app: BridgeInstalledAppInfo | null) {
+		return app?.packageName ?? `empty-${index}`;
 	}
 }

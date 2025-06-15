@@ -57,7 +57,7 @@ export class TaskbarComponent implements AfterViewInit {
 	ngAfterViewInit(): void {
 		const baseAccent = this._bridgeService.getMonetColors().accent.trim() || '#FF6688';
 		document.querySelectorAll('.icon-mask').forEach((el) => {
-			const randomColor = this._accentVariant(baseAccent, 40); // hasta ±40 por canal
+			const randomColor = this._accentVariant(baseAccent, 10); // hasta ±40 por canal
 			(el as HTMLElement).style.backgroundColor = randomColor;
 		});
 	}

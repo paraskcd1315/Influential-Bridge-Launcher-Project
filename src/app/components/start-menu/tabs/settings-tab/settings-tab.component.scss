@@ -1,0 +1,131 @@
+@reference "tailwindcss";
+
+:host {
+	@apply flex flex-col gap-4 pb-4;
+}
+
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 60px;
+	height: 34px;
+}
+
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.slider {
+	--border-width: 1px;
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(-75deg, rgba(var(--monet-accent-rgb), 0.01), rgba(var(--monet-accent-rgb), 0.2), rgba(var(--monet-accent-rgb), 0.05));
+
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
+
+	&::after,
+	.toggle::after {
+		content: '';
+		position: absolute;
+		z-index: 1;
+		inset: 0;
+		border-radius: 2rem;
+		width: calc(100% + var(--border-width));
+		height: calc(100% + var(--border-width));
+		top: calc(0% - var(--border-width) / 2);
+		left: calc(0% - var(--border-width) / 2);
+		padding: var(--border-width);
+		box-sizing: border-box;
+		background:
+			conic-gradient(
+				from var(--angle-1) at 50% 50%,
+				rgba(var(--monet-accent-rgb), 0.25),
+				rgba(var(--monet-accent-rgb), 0) 5% 40%,
+				rgba(var(--monet-accent-rgb), 0.25) 50%,
+				rgba(var(--monet-accent-rgb), 0) 60% 95%,
+				rgba(var(--monet-accent-rgb), 0.25)
+			),
+			linear-gradient(180deg, rgba(var(--monet-background-rgb), 0.25), rgba(var(--monet-background-rgb), 0.25));
+		mask:
+			linear-gradient(#000 0 0) content-box,
+			linear-gradient(#000 0 0);
+		mask-composite: exclude;
+		box-shadow: inset 0 0 0 rgba(var(--monet-background-rgb), 0.342);
+	}
+
+	.toggle {
+		border-radius: 50%;
+		position: absolute;
+		height: 26px;
+		width: 26px;
+		left: 4px;
+		bottom: 4px;
+		backdrop-filter: url(#frosted);
+		-webkit-backdrop-filter: url(#frosted);
+		background: linear-gradient(-75deg, rgba(var(--monet-accent-rgb), 0.05), rgba(var(--monet-accent-rgb), 0.15), rgba(var(--monet-accent-rgb), 0.05), rgba(var(--monet-accent-rgb), 0.05));
+		-webkit-transition: 0.4s;
+		transition: 0.4s;
+	}
+}
+
+input:checked + .slider {
+	background: linear-gradient(-75deg, rgba(var(--monet-accent-rgb), 0.1), rgba(var(--monet-accent-rgb), 0.4), rgba(var(--monet-accent-rgb), 0.1));
+}
+
+input:checked + .slider .toggle {
+	-webkit-transform: translateX(26px);
+	-ms-transform: translateX(26px);
+	transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+	border-radius: 34px;
+}
+
+.slider.round:before {
+	border-radius: 50%;
+}
+
+input[type='color'] {
+	background: linear-gradient(-75deg, rgba(var(--monet-accent-rgb), 0.1), rgba(var(--monet-accent-rgb), 0.4), rgba(var(--monet-accent-rgb), 0.1));
+	width: 60px;
+	height: 34px;
+	@apply rounded-full p-2;
+
+	&::after {
+		content: '';
+		position: absolute;
+		z-index: 1;
+		inset: 0;
+		border-radius: 2rem;
+		width: calc(100% + var(--border-width));
+		height: calc(100% + var(--border-width));
+		top: calc(0% - var(--border-width) / 2);
+		left: calc(0% - var(--border-width) / 2);
+		padding: var(--border-width);
+		box-sizing: border-box;
+		background:
+			conic-gradient(
+				from var(--angle-1) at 50% 50%,
+				rgba(var(--monet-accent-rgb), 0.25),
+				rgba(var(--monet-accent-rgb), 0) 5% 40%,
+				rgba(var(--monet-accent-rgb), 0.25) 50%,
+				rgba(var(--monet-accent-rgb), 0) 60% 95%,
+				rgba(var(--monet-accent-rgb), 0.25)
+			),
+			linear-gradient(180deg, rgba(var(--monet-background-rgb), 0.25), rgba(var(--monet-background-rgb), 0.25));
+		mask:
+			linear-gradient(#000 0 0) content-box,
+			linear-gradient(#000 0 0);
+		mask-composite: exclude;
+		box-shadow: inset 0 0 0 rgba(var(--monet-background-rgb), 0.342);
+	}
+}

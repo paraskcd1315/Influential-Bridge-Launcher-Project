@@ -18,6 +18,7 @@ export class SpotlightComponent {
 
 	isSpotlightActive = this._spotlightService.spotlightActive;
 	reveal = this._spotlightService.spotlightReveal;
+	mathResult = this._spotlightService.mathResult;
 
 	searchInput = viewChild<ElementRef<HTMLInputElement>>('search');
 

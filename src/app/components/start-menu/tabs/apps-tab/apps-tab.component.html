@@ -1,0 +1,44 @@
+<div #appHeader class="sticky top-0 flex justify-between rounded-2xl">
+	<div class="inputContainer flex w-4 w-full flex-col rounded-lg bg-slate-800/20">
+		<div class="flex w-full items-center gap-2 rounded-lg p-2">
+			<mat-icon class="w-full" svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
+			<input #search type="text" class="w-full p-2 outline-none" placeholder="Search..." (input)="searchQuery.set($any($event.target).value)" />
+			@if (searchQuery()) {
+				<mat-icon svgIcon="heroicons_outline:x-mark" (click)="clearSearch()"></mat-icon>
+			}
+		</div>
+	</div>
+</div>
+<div class="flex flex-col">
+	@for (letter of Object.keys(distributedApps()); track letter) {
+		<div class="flex flex-col gap-2 px-4 pb-2">
+			<button #letterHeader [id]="letter" class="blur-transition w-full pl-2.5 text-left text-xl font-semibold uppercase" [class.blur]="blurredLetters[letter]">
+				<span class="prevent-select">{{ letter }}</span>
+			</button>
+			@for (app of distributedApps()[letter]; track app) {
+				<button #appButton [id]="app.packageName" class="blur-transition flex items-center gap-2" (click)="openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)" [class.blur]="blurredApps[app.packageName]">
+					<img [src]="getAppIcon(app.packageName, app.label)" class="h-8 w-8" [alt]="app.label" />
+					<span class="prevent-select text-start">
+						{{ app.label }}
+					</span>
+				</button>
+			}
+		</div>
+	}
+</div>
+<div
+	#letterSidebar
+	class="fixed right-2 z-50 mt-12 flex flex-col items-center space-y-1 text-sm font-bold text-white"
+	(mousedown)="startDrag($event)"
+	(touchstart)="startDrag($event)"
+	(mousemove)="onDrag($event)"
+	(touchmove)="onDrag($event)"
+	(mouseup)="endDrag()"
+	(touchend)="endDrag()"
+>
+	@for (letter of Object.keys(distributedApps()); track letter) {
+		<span class="prevent-select cursor-pointer select-none" [attr.data-letter]="letter">
+			{{ letter }}
+		</span>
+	}
+</div>

@@ -9,6 +9,19 @@
 				}
 			</div>
 		</div>
+		@if (mathResult() !== null) {
+			<div class="animate-fade-in container flex h-full max-h-64 w-full flex-col gap-4 overflow-y-auto rounded-lg bg-black/10 p-4">
+				<span class="font-bold">Calculator</span>
+
+				<!-- Si hay representación humana (ej. fecha legible) -->
+				<span *ngIf="mathResult()?.human; else unitOrDefault"> {{ mathResult()?.human }} ({{ mathResult()?.value }}{{ mathResult()?.unit ? ' ' + mathResult()?.unit : '' }}) </span>
+
+				<!-- Si no hay human, mostrar con unidad si hay -->
+				<ng-template #unitOrDefault>
+					<span> {{ searchQuery() }} = {{ mathResult()?.value }}{{ mathResult()?.unit ? ' ' + mathResult()?.unit : '' }} </span>
+				</ng-template>
+			</div>
+		}
 		@if (filteredApps().length > 0) {
 			<div class="animate-fade-in container flex h-full max-h-64 w-full flex-col gap-4 overflow-y-auto rounded-lg bg-black/10 p-4" data-scrollable>
 				<span class="font-bold">Apps</span>

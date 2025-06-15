@@ -1,0 +1,40 @@
+<div #calendarHeader class="sticky top-0 z-10 flex justify-between px-2 py-4">
+	<div class="flex items-center gap-4">
+		<button (click)="previousDay()" [disabled]="isAtStartOfMonth">
+			<mat-icon svgIcon="heroicons_outline:chevron-left" />
+		</button>
+		<button class="flex flex-col items-start" (click)="currentDay()">
+			<span class="text-4xl font-bold">{{ selectedDate() | date: 'EEEE' }}</span>
+			<span class="text-3xl">{{ selectedDate() | date: 'MMMM d, YYYY' }}</span>
+		</button>
+	</div>
+	<button (click)="nextDay()" [disabled]="isAtEndOfMonth">
+		<mat-icon svgIcon="heroicons_outline:chevron-right" />
+	</button>
+</div>
+<div #allDay class="relative z-5 flex flex-col px-2">
+	@for (event of allDayCalendarEvents(); track event.id; let i = $index) {
+		<div #allDayBlock class="blur-transition container mb-2 p-4" [class.blur]="blurredAllDay[i]">
+			{{ event.title }}
+		</div>
+	}
+</div>
+<div #hours class="relative flex flex-col px-2">
+	@for (hourKey of Object.keys(hourlyDistributedEvents()); track hourKey) {
+		<div class="relative min-h-[85px] py-2 pl-2">
+			<!-- Hora -->
+			<div #hourBlock class="blur-transition relative w-[4rem] shrink-0 pt-1 pr-2 text-right text-xs text-white/50" [class.blur]="blurredHours[hourKey]">
+				{{ hourKey }}
+			</div>
+			<div class="blur-transition absolute top-0 right-0 left-0 h-[1px] bg-white/10" [class.blur]="blurredHourBorders[hourKey]"></div>
+			<!-- Eventos -->
+			@for (event of hourlyDistributedEvents()[hourKey]; track event.id) {
+				<div class="events overflow-hidden rounded px-3 text-sm text-white shadow-md text-shadow-lg" [class.blur]="blurredEventIds[event.id]" [ngStyle]="mergeEventStyles(event, hourKey)" [attr.data-event-id]="event.id">
+					{{ event.title }}
+					<br />
+					<span class="text-xs text-white/70"> {{ event.startTime | date: 'HH:mm' }} → {{ event.endTime | date: 'HH:mm' }} </span>
+				</div>
+			}
+		</div>
+	}
+</div>

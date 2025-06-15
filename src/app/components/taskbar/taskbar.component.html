@@ -15,13 +15,13 @@
 		}
 	</div>
 </button>
-<div #taskbarRef id="taskbar" class="flex items-center justify-between rounded-lg p-4 shadow-2xl backdrop-blur-2xl">
+<div #taskbarRef id="taskbar" class="flex items-center justify-between rounded-lg p-4 shadow-2xl">
 	<div class="relative z-50 flex items-center gap-5">
 		<app-start-button (startEmitter)="openStartMenuEventEmitter.emit()" />
-		<div class="flex w-full gap-x-4 overflow-x-auto whitespace-nowrap">
+		<div class="flex w-full gap-x-5 overflow-x-auto whitespace-nowrap">
 			@for (app of pinnedApps(); track app) {
 				<button class="relative shrink-0" (click)="openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)">
-					<div [ngStyle]="{ '--icon-url': 'url(' + getAppIcon(app.packageName) + ')' }" class="icon-mask w-10"></div>
+					<div [ngStyle]="{ '--icon-url': 'url(' + getAppIcon(app.packageName) + ')' }" class="icon-mask w-12"></div>
 					@if (notifications() && notifications()[app.packageName]) {
 						<div class="absolute top-0 -right-2 h-2 w-2 shrink-0 rounded-full bg-white/80 backdrop-blur-2xl"></div>
 					}

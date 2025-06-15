@@ -1,7 +1,9 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { AppGridService } from '../../utils/app-grid/app-grid.service';
 import { BridgeService } from '../../utils/bridge/bridge.service';
 import { PACKAGE_NAME_ALIASES } from '../../utils/constants';
+import { evaluateMathExpression } from '../../utils/math/math.utils';
 import { StartMenuService } from '../start-menu/start-menu.service';
 
 @Injectable({
@@ -18,6 +20,24 @@ export class SpotlightService {
 	spotlightReveal = signal<number>(0);
 
 	searchQuery = signal<string | undefined>(undefined);
+
+	mathResult = signal<{ value: number; unit?: string; human?: string } | null>(null);
+
+	constructor() {
+		window.addEventListener('popstate', this.handleBackButton);
+
+		effect(() => {
+			const query = this.searchQuery();
+			if (!query) {
+				this.mathResult.set(null);
+				return;
+			}
+
+			evaluateMathExpression(query, environment.currencyApiKey).then((result) => {
+				this.mathResult.set(result);
+			});
+		});
+	}
 
 	apps = this._bridgeService.apps;
 
@@ -68,10 +88,6 @@ export class SpotlightService {
 			return packageAliases.includes(lowerQuery);
 		});
 	});
-
-	constructor() {
-		window.addEventListener('popstate', this.handleBackButton);
-	}
 
 	openSpotlight() {
 		if (!this._appgridService.isEditMode() && !this._startMenuService.startMenuActive()) {

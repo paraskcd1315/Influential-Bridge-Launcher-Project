@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, HostListener, inject, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, HostListener, inject } from '@angular/core';
 import { AppGridComponent } from './components/app-grid/app-grid.component';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 import { DateComponent } from './components/date/date.component';
@@ -12,6 +12,7 @@ import { TaskbarComponent } from './components/taskbar/taskbar.component';
 import { WeatherComponent } from './components/weather/weather.component';
 import { BridgeService } from './utils/bridge/bridge.service';
 import { HomescreenService } from './utils/homescreen/homescreen.service';
+import { TouchStateService } from './utils/touch-state/touch-state.service';
 
 @Component({
 	selector: 'app-root',
@@ -25,7 +26,7 @@ export class AppComponent implements AfterViewInit {
 	private readonly _spotlightService = inject(SpotlightService);
 	private readonly _homescreenService = inject(HomescreenService);
 	private readonly _startMenuService = inject(StartMenuService);
-	private readonly _rendererService = inject(Renderer2);
+	private readonly _touchState = inject(TouchStateService);
 
 	ngAfterViewInit(): void {
 		this._injectMonetColorsToCss();
@@ -54,6 +55,9 @@ export class AppComponent implements AfterViewInit {
 	@HostListener('touchmove', ['$event'])
 	onTouchMove(event: TouchEvent) {
 		const target = event.target as HTMLElement;
+		if (this._touchState.isGridScrollingHorizontally() || target.closest('.media-weather-scroll')) {
+			return;
+		}
 		if (target.closest('[data-scrollable]')) {
 			return; // Skip spotlight reveal if inside scrollable content
 		}

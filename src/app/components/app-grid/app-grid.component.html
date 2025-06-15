@@ -2,32 +2,49 @@
 	@for (pageNumber of Object.keys(paginatedApps()); track pageNumber) {
 		<div class="mx-4 min-w-full snap-center px-4">
 			<div class="grid grid-cols-4 gap-8">
-				@for (app of paginatedApps()[+pageNumber]; track $index) {
+				@for (app of paginatedApps()[+pageNumber]; let i = $index; track trackApp(i, app)) {
 					@if (app) {
-						<button
-							[attr.data-app-index]="(+pageNumber - 1) * 20 + $index"
-							class="flex w-full flex-col items-center justify-center"
-							[ngClass]="{ 'animate-wiggle': editMode() }"
-							(touchstart)="onTouchStart($event, app, $index)"
-							(touchmove)="onTouchMove($event)"
-							(click)="openApp($event, app)"
-							(contextmenu)="onContextMenu($event, app)"
-						>
-							<div class="relative flex w-full items-center justify-center">
-								<div class="appBg flex items-center justify-center rounded-full p-2 backdrop-blur-2xl" [ngClass]="{ 'ring-2 ring-blue-500/50': dragOverApp()?.packageName === app.packageName }">
-									<div [ngStyle]="{ '--icon-url': 'url(' + getAppIcon(app.packageName) + ')' }" class="icon-mask w-8"></div>
+						<div class="flex items-start gap-2">
+							@if (editMode()) {
+								<button
+									class="animate-wiggle absolute z-50 -ml-8 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full border border-slate-400 bg-white/80 text-black backdrop-blur-2xl"
+									(click)="openDeleteDialog($event, app)"
+								>
+									<i class="icon-ic_fluent_dismiss_12_regular mt-1 text-xs"></i>
+								</button>
+							}
+							<button
+								[attr.data-app-index]="(+pageNumber - 1) * 20 + $index"
+								class="flex w-full flex-col items-center justify-center"
+								[ngClass]="{ 'animate-wiggle': editMode() }"
+								(touchstart)="onTouchStart($event, app, $index)"
+								(touchmove)="onTouchMove($event)"
+								(click)="openApp($event, app)"
+								(contextmenu)="onContextMenu($event, app)"
+							>
+								<div class="relative flex w-full items-center justify-center">
+									@if (hasMatchedIcon(app.packageName)) {
+										<div class="appBg flex items-center justify-center rounded-full p-2 backdrop-blur-2xl" [ngClass]="{ 'ring-2 ring-blue-500/50': dragOverApp()?.packageName === app.packageName }">
+											<div
+												*ngIf="app?.packageName"
+												[style.webkitMaskImage]="'url(' + getAppIcon(app.packageName) + ')'"
+												[style.maskImage]="'url(' + getAppIcon(app.packageName) + ')'"
+												class="icon-mask w-8"
+												[style.backgroundColor]="'var(--monet-accent)'"
+											></div>
+										</div>
+									} @else {
+										<div class="appBg flex items-center justify-center rounded-full p-2 backdrop-blur-2xl" [ngClass]="{ 'ring-2 ring-blue-500/50': dragOverApp()?.packageName === app.packageName }">
+											<img class="w-8" [src]="getAppIcon(app.packageName)" [alt]="app.label" />
+										</div>
+									}
+									@if (notifications() && notifications()[app.packageName]) {
+										<div class="absolute top-0 -right-2 h-2 w-2 shrink-0 rounded-full border-t border-slate-400 bg-white/80 backdrop-blur-2xl"></div>
+									}
 								</div>
-								@if (editMode()) {
-									<button class="absolute top-0 -left-3 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-t border-slate-400 bg-white/80 text-black backdrop-blur-2xl" (click)="openDeleteDialog($event, app)">
-										<i class="icon-ic_fluent_dismiss_12_regular mt-1 text-xs"></i>
-									</button>
-								}
-								@if (notifications() && notifications()[app.packageName]) {
-									<div class="absolute top-0 -right-2 h-2 w-2 shrink-0 rounded-full border-t border-slate-400 bg-white/80 backdrop-blur-2xl"></div>
-								}
-							</div>
-							<span class="w-14 truncate text-xs text-white">{{ app.label }}</span>
-						</button>
+								<span class="w-14 truncate text-xs text-white text-shadow-lg">{{ app.label }}</span>
+							</button>
+						</div>
 					} @else {
 						<div
 							class="h-16 w-16 rounded border-2 border-dashed border-white/30 shadow-2xl shadow-white/50"

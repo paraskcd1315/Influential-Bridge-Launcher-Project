@@ -10,6 +10,7 @@ import { PACKAGE_NAME_ALIASES } from '../../utils/constants';
 export class StartMenuService {
 	private readonly _bridgeService = inject(BridgeService);
 
+	activeLetter = signal<string | undefined>(undefined);
 	selectedDate = signal(new Date());
 	startMenuActive = signal<boolean>(false);
 	filter = signal<string | undefined>(undefined);
