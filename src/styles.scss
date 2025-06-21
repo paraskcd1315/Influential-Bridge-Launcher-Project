@@ -286,7 +286,7 @@ input.clearing {
 		filter: url(#lensFilter) saturate(100%) brightness(0.9);
 		border-radius: 2rem;
 
-		@apply backdrop-blur-md;
+		@apply backdrop-blur-xl;
 	}
 
 	&::after {
