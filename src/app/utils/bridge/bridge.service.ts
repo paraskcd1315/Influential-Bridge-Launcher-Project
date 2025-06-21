@@ -6,6 +6,7 @@ import { BridgeMock } from '@bridgelauncher/api-mock';
 import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ICalendar } from './calendar.types';
+import { IContact } from './contact.types';
 import { IMonetColors } from './monet.types';
 const { Bridge } = window as any;
 
@@ -35,6 +36,17 @@ export class BridgeService {
 			to.setMonth(to.getMonth() + 1);
 			return this._httpClient.get<ICalendar[]>(`${request.bridge.getCalendarUrl()}?from=${from.toISOString()}&to=${to.toISOString()}`);
 		},
+	});
+
+	private readonly contactsResource = rxResource({
+		request: () => ({ bridge: this.bridge() }),
+		loader: ({ request }) => {
+			return this._httpClient.get<IContact[]>(`${request.bridge.getContactsUrl()}`);
+		},
+	});
+
+	contacts = computed(() => {
+		return this.contactsResource.value() ?? ([] as IContact[]);
 	});
 
 	apps = computed(() => {
@@ -179,6 +191,22 @@ export class BridgeService {
 
 	requestOpenDeveloperConsole() {
 		this.bridge().requestOpenDeveloperConsole();
+	}
+
+	requestOpenBridgeSettings() {
+		this.bridge().requestOpenBridgeSettings();
+	}
+
+	requestContactCall(phoneNumber: string) {
+		this.bridge().requestContactCall(phoneNumber);
+	}
+
+	requestMessagingContact(phoneNumber: string, app: string, packageName?: string) {
+		if (packageName) {
+			this.bridge().requestMessagingContact(phoneNumber, app, null, packageName);
+		} else {
+			this.bridge().requestMessagingContact(phoneNumber, app);
+		}
 	}
 
 	private _injectBridgeMockInDev() {

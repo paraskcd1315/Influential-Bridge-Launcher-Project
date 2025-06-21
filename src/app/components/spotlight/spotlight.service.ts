@@ -21,7 +21,7 @@ export class SpotlightService {
 
 	searchQuery = signal<string | undefined>(undefined);
 
-	mathResult = signal<{ value: number; unit?: string; human?: string } | null>(null);
+	mathResult = signal<{ value: number; unit?: string; human?: string; altHuman?: string } | null>(null);
 
 	constructor() {
 		window.addEventListener('popstate', this.handleBackButton);

@@ -2,6 +2,7 @@ import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { BridgeService } from '../../utils/bridge/bridge.service';
 import { ICalendar } from '../../utils/bridge/calendar.types';
+import { IContact } from '../../utils/bridge/contact.types';
 import { PACKAGE_NAME_ALIASES } from '../../utils/constants';
 
 @Injectable({
@@ -9,23 +10,71 @@ import { PACKAGE_NAME_ALIASES } from '../../utils/constants';
 })
 export class StartMenuService {
 	private readonly _bridgeService = inject(BridgeService);
+	private readonly _clock = signal(new Date());
 
 	activeLetter = signal<string | undefined>(undefined);
 	selectedDate = signal(new Date());
 	startMenuActive = signal<boolean>(false);
 	filter = signal<string | undefined>(undefined);
+
 	apps = this._bridgeService.apps;
-	private readonly _clock = signal(new Date());
+	contacts = this._bridgeService.contacts;
 
 	constructor() {
 		effect(() => {
-			console.log(this.selectedDate());
-
 			setInterval(() => {
 				this._clock.set(new Date());
 			}, 60 * 1000);
 		});
 	}
+
+	alphabeticDistributedContacts = computed(() => {
+		const grouped: Record<string, IContact[]> = {};
+
+		// Primero, mete favoritos en un grupo aparte
+		const favourites = this.contacts().filter((c) => c.isFavorite);
+		if (favourites.length > 0) {
+			grouped['favourites'] = favourites;
+		}
+
+		// Ahora el resto, excluyendo los favoritos
+		for (const contact of this.contacts().filter((c) => !c.isFavorite)) {
+			const firstLetter = contact.name?.[0]?.toLowerCase() ?? '#';
+			const key = /^[a-z]$/.test(firstLetter) ? firstLetter : '#';
+
+			if (!grouped[key]) {
+				grouped[key] = [];
+			}
+
+			grouped[key].push(contact);
+		}
+
+		return grouped;
+	});
+
+	filteredContacts = computed(() => {
+		const query = this.filter();
+		if (!query && this.contacts().length > 0) return this.alphabeticDistributedContacts();
+
+		const lowerQuery = query?.toLowerCase() ?? '';
+		const original = this.alphabeticDistributedContacts();
+		const filtered: Record<string, IContact[]> = {};
+
+		for (const [letter, contacts] of Object.entries(original)) {
+			const matchingContacts = contacts.filter((contact) => {
+				const name = contact.name?.toLowerCase() ?? '';
+				const username = contact.telegramUsername?.toLowerCase() ?? '';
+				const phoneMatches = contact.phoneNumbers.some((num) => num.replace(/\s/g, '').includes(lowerQuery));
+				return name.includes(lowerQuery) || username.includes(lowerQuery) || phoneMatches;
+			});
+
+			if (matchingContacts.length > 0) {
+				filtered[letter] = matchingContacts;
+			}
+		}
+
+		return filtered;
+	});
 
 	alphabeticDistributedApps = computed(() => {
 		const grouped: Record<string, BridgeInstalledAppInfo[]> = {};

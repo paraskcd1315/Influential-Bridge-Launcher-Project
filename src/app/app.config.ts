@@ -14,7 +14,7 @@ export const appConfig: ApplicationConfig = {
 		provideIcons(),
 		provideAnimations(),
 		provideAppInitializer(() => {
-			const bridgeService = inject(BridgeService);
+			inject(BridgeService);
 		}),
 	],
 };

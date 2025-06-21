@@ -2,6 +2,7 @@
 	<div class="container my-1 flex w-full items-center justify-center rounded-2xl">
 		<button [class.container]="selectedTab() === startMenuTab.Apps" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Apps)">Apps</button>
 		<button [class.container]="selectedTab() === startMenuTab.Calendar" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Calendar)">Calendar</button>
+		<button [class.container]="selectedTab() === startMenuTab.Contacts" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Contacts)">Contacts</button>
 		<button [class.container]="selectedTab() === startMenuTab.Settings" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Settings)">Settings</button>
 	</div>
 	<div #scrollAnchorContainer class="scroll-anchor-container animate-fade-in relative z-10 flex w-full flex-col gap-3 overflow-y-auto">
@@ -12,13 +13,16 @@
 			@case (startMenuTab.Calendar) {
 				<start-menu-calendar-tab />
 			}
+			@case (startMenuTab.Contacts) {
+				<start-menu-contacts />
+			}
 			@case (startMenuTab.Settings) {
 				<start-menu-settings-tab />
 			}
 		}
 	</div>
 </div>
-@if (activeLetter() && selectedTab() === startMenuTab.Apps) {
+@if (activeLetter() && (selectedTab() === startMenuTab.Apps || selectedTab() === startMenuTab.Contacts)) {
 	<div class="activeLetter animate-fade-in prevent-select pointer-events-none absolute top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform rounded-lg p-4 text-5xl font-bold text-white backdrop-blur-2xl">
 		{{ activeLetter() }}
 	</div>

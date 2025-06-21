@@ -4,7 +4,7 @@ import { parseMathCalculation } from './math-calculations.utils';
 import { parseTemperatureConversion } from './temperature-converter.utils';
 import { parseUnitConversions } from './unit-converter.utils';
 
-export async function evaluateMathExpression(input: string, currency_access_key?: string): Promise<{ value: number; human?: string; unit?: string } | null> {
+export async function evaluateMathExpression(input: string, currency_access_key?: string): Promise<{ value: number; human?: string; altHuman?: string; unit?: string } | null> {
 	const raw = (() => {
 		let raw = input.toLowerCase().trim();
 		const verbalNumbers = [

@@ -179,3 +179,43 @@ export const PACKAGE_NAME_ALIASES: Record<string, string[]> = {
 	'org.telegram.messenger': ['telegram', 'chat', 'mensajería', 'messaging', 'tg'],
 	'tw.nekomimi.nekogram': ['telegram', 'chat', 'mensajería', 'messaging', 'tg', 'nekogram', 'neko'],
 };
+
+export enum ContactActions {
+	CALL = 'CALL',
+	MESSAGE = 'MESSAGE',
+}
+
+export enum MessagingApp {
+	WHATSAPP = 'WHATSAPP',
+	TELEGRAM = 'TELEGRAM',
+	SIGNAL = 'SIGNAL',
+	SMS = 'SMS',
+}
+
+export interface IContactActions {
+	packageName: string;
+	action: ContactActions;
+	messagingApp?: MessagingApp;
+}
+
+export const contactActions: IContactActions[] = [
+	{
+		packageName: 'com.google.android.dialer',
+		action: ContactActions.CALL,
+	},
+	{
+		packageName: 'com.google.android.apps.messaging',
+		action: ContactActions.MESSAGE,
+		messagingApp: MessagingApp.SMS,
+	},
+	{
+		packageName: 'com.whatsapp',
+		action: ContactActions.MESSAGE,
+		messagingApp: MessagingApp.WHATSAPP,
+	},
+	{
+		packageName: 'org.telegram.messenger',
+		action: ContactActions.MESSAGE,
+		messagingApp: MessagingApp.TELEGRAM,
+	},
+];

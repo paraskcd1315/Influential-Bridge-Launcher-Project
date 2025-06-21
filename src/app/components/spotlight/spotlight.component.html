@@ -14,7 +14,9 @@
 				<span class="font-bold">Calculator</span>
 
 				<!-- Si hay representación humana (ej. fecha legible) -->
-				<span *ngIf="mathResult()?.human; else unitOrDefault"> {{ mathResult()?.human }} ({{ mathResult()?.value }}{{ mathResult()?.unit ? ' ' + mathResult()?.unit : '' }}) </span>
+				<span *ngIf="mathResult()?.human; else unitOrDefault">
+					{{ mathResult()?.human }} ({{ mathResult()?.value }}{{ mathResult()?.unit ? ' ' + mathResult()?.unit : '' }}) <span *ngIf="mathResult()?.altHuman">({{ mathResult()?.altHuman }})</span></span
+				>
 
 				<!-- Si no hay human, mostrar con unidad si hay -->
 				<ng-template #unitOrDefault>

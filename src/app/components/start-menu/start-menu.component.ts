@@ -7,11 +7,12 @@ import { StartMenuService } from './start-menu.service';
 import { StartMenuTab } from './start-menu.types';
 import { AppsTabComponent } from './tabs/apps-tab/apps-tab.component';
 import { CalendarTabComponent } from './tabs/calendar-tab/calendar-tab.component';
+import { ContactsComponent } from './tabs/contacts/contacts.component';
 import { SettingsTabComponent } from './tabs/settings-tab/settings-tab.component';
 
 @Component({
 	selector: 'app-start-menu',
-	imports: [CommonModule, MatIconModule, CalendarTabComponent, AppsTabComponent, SettingsTabComponent],
+	imports: [CommonModule, MatIconModule, CalendarTabComponent, AppsTabComponent, SettingsTabComponent, ContactsComponent],
 	standalone: true,
 	templateUrl: './start-menu.component.html',
 	styleUrl: './start-menu.component.scss',

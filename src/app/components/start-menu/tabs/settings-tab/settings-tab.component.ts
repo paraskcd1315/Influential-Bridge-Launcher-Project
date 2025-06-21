@@ -14,4 +14,8 @@ export class SettingsTabComponent {
 	get monetColors(): IMonetColors {
 		return this._bridgeService.getMonetColors();
 	}
+
+	openBridgeSettings() {
+		this._bridgeService.requestOpenBridgeSettings();
+	}
 }

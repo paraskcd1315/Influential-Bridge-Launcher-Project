@@ -1,0 +1,84 @@
+<div #appHeader class="sticky top-0 z-60 flex justify-between rounded-2xl">
+	<div class="inputContainer flex w-4 w-full flex-col rounded-lg bg-slate-800/20">
+		<div class="flex w-full items-center gap-2 rounded-lg p-2">
+			<mat-icon class="w-full" svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
+			<input #search type="text" class="w-full p-2 outline-none" placeholder="Search..." (input)="searchQuery.set($any($event.target).value)" />
+			@if (searchQuery()) {
+				<mat-icon svgIcon="heroicons_outline:x-mark" (click)="clearSearch()"></mat-icon>
+			}
+		</div>
+	</div>
+</div>
+<div class="relative z-50 mt-2 flex flex-col">
+	@for (group of sortedVisibleGroups(); track group) {
+		<div class="flex flex-col gap-2 px-4 pb-2">
+			<button #letterHeader [id]="group" class="blur-transition w-full pl-2.5 text-left text-xl font-semibold uppercase" [class.blur]="blurredLetters[group]">
+				<span class="prevent-select">{{ group }}</span>
+			</button>
+			@for (contact of distributedContacts()[group]; track contact.id) {
+				<button #contactButton [id]="contact.id" class="blur-transition flex items-center gap-2" (click)="openContact(contact.id)" [class.blur]="blurredContacts[contact.id]">
+					@if (contact.photoUri) {
+						<div class="container flex h-12 w-12 items-center justify-center">
+							<img class="h-12 w-12 rounded-full object-cover" [alt]="contact.name" [src]="'data:image/png;base64,' + contact.photoUri" />
+						</div>
+					} @else {
+						<!-- Fallback icon/avatar si no hay foto -->
+						<div class="container flex h-12 w-12 items-center justify-center">
+							<mat-icon svgIcon="heroicons_outline:user-circle" class="opacity-50"></mat-icon>
+						</div>
+					}
+					<span class="prevent-select text-start">
+						{{ contact.name }}
+					</span>
+				</button>
+				<div [@expandCollapse]="openedContactIds().includes(contact.id) ? 'expanded' : 'collapsed'" class="flex flex-col gap-2">
+					@for (phoneNumber of contact.phoneNumbers; track phoneNumber) {
+						<div #contactCollapsible [id]="contact.id + '-' + phoneNumber" class="blur-transition container flex flex-col gap-2 p-4" [class.blur]="blurredCollapsibles[contact.id + '-' + phoneNumber]">
+							<span class="text-xl font-bold">{{ phoneNumber }}</span>
+							<div class="flex items-center justify-between">
+								@for (action of contactActions; track action.packageName) {
+									<button (click)="invokeAction(action, phoneNumber)">
+										@if (hasMatchedIcon(action.packageName)) {
+											<div class="container flex h-12 w-12 items-center justify-center">
+												<div
+													[style.webkitMaskImage]="'url(' + getAppIcon(action.packageName) + ')'"
+													[style.maskImage]="'url(' + getAppIcon(action.packageName) + ')'"
+													class="icon-mask w-8"
+													[style.backgroundColor]="'var(--monet-accent)'"
+												></div>
+											</div>
+										} @else {
+											<div class="container flex h-12 w-12 items-center justify-center">
+												<img class="w-8" [src]="getAppIcon(action.packageName)" alt="" />
+											</div>
+										}
+									</button>
+								}
+							</div>
+						</div>
+					}
+				</div>
+			}
+		</div>
+	}
+</div>
+<div
+	#letterSidebar
+	class="fixed top-24 right-2 z-120 mt-12 flex flex-col items-center space-y-1 text-sm font-bold text-white"
+	(mousedown)="startDrag($event)"
+	(touchstart)="startDrag($event)"
+	(mousemove)="onDrag($event)"
+	(touchmove)="onDrag($event)"
+	(mouseup)="endDrag()"
+	(touchend)="endDrag()"
+>
+	@for (group of sortedVisibleGroups(); track group) {
+		<span class="prevent-select cursor-pointer select-none" [attr.data-letter]="group">
+			@if (group === 'favourites') {
+				⭐
+			} @else {
+				{{ group }}
+			}
+		</span>
+	}
+</div>
