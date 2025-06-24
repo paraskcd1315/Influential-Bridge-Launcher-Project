@@ -41,6 +41,8 @@ export class SpotlightService {
 
 	apps = this._bridgeService.apps;
 
+	contacts = this._bridgeService.contacts;
+
 	suggestions = computed<string[]>(() => {
 		const query = this.searchQuery();
 		if (!query || query.length < 3) {
@@ -87,6 +89,15 @@ export class SpotlightService {
 			const packageAliases = PACKAGE_NAME_ALIASES[app.packageName] || [];
 			return packageAliases.includes(lowerQuery);
 		});
+	});
+
+	filteredContacts = computed(() => {
+		const query = this.searchQuery();
+		if (!query) {
+			return [];
+		}
+
+		return this.contacts().filter((contact) => contact.name.trim().toLowerCase().includes(query.trim().toLowerCase()) || contact.phoneNumbers.some((phone) => phone.trim().includes(query)));
 	});
 
 	openSpotlight() {

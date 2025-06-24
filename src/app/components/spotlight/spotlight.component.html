@@ -24,17 +24,60 @@
 				</ng-template>
 			</div>
 		}
+		@if (filteredContacts().length > 0) {
+			<div class="animate-fade-in container flex h-full w-full flex-col gap-4 rounded-lg bg-black/10">
+				<span class="px-4 pt-4 font-bold">Contacts</span>
+				<div class="mb-2 flex max-h-64 flex-col gap-2 overflow-y-auto px-4" data-scrollable>
+					@for (contact of filteredContacts(); track contact.id) {
+						<div class="flex h-full flex-col gap-2">
+							<button class="flex items-center gap-2" (click)="openContact(contact.id)">
+								<div class="container flex h-12 w-12 items-center justify-center">
+									@if (contact.photoUri) {
+										<img class="h-12 w-12 rounded-full object-cover" [alt]="contact.name" [src]="'data:image/png;base64,' + contact.photoUri" />
+									} @else {
+										<mat-icon svgIcon="heroicons_outline:user-circle" class="opacity-50"></mat-icon>
+									}
+								</div>
+								<span class="prevent-select text-start">
+									{{ contact.name }}
+								</span>
+							</button>
+							<div [@expandCollapse]="openedContactIds().includes(contact.id) ? 'expanded' : 'collapsed'" class="flex flex-col gap-2">
+								@for (phoneNumber of contact.phoneNumbers; track phoneNumber) {
+									<div #contactCollapsible [id]="contact.id + '-' + phoneNumber" class="container flex flex-col gap-2 p-4">
+										<span class="text-xl font-bold">{{ phoneNumber }}</span>
+										<div class="flex items-center justify-between">
+											@for (action of contactActions; track action.packageName) {
+												<button (click)="invokeAction(action, phoneNumber)">
+													<div class="container flex h-12 w-12 items-center justify-center">
+														<img class="w-8" [src]="getAppIcon(action.packageName)" alt="" />
+													</div>
+												</button>
+											}
+										</div>
+									</div>
+								}
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		}
 		@if (filteredApps().length > 0) {
-			<div class="animate-fade-in container flex h-full max-h-64 w-full flex-col gap-4 overflow-y-auto rounded-lg bg-black/10 p-4" data-scrollable>
-				<span class="font-bold">Apps</span>
-				@for (app of filteredApps(); track app.packageName) {
-					<button class="flex items-center gap-2" (click)="openApp(app.packageName)">
-						<img [src]="getAppIcon(app.packageName, app.label)" class="h-8 w-8" [alt]="app.label" />
-						<span class="prevent-select text-start">
-							{{ app.label }}
-						</span>
-					</button>
-				}
+			<div class="animate-fade-in container flex h-full w-full flex-col gap-4 rounded-lg bg-black/10">
+				<span class="px-4 pt-4 font-bold">Apps</span>
+				<div class="mb-4 flex max-h-64 flex-col gap-2 overflow-y-auto px-4" data-scrollable>
+					@for (app of filteredApps(); track app.packageName) {
+						<button class="flex items-center gap-2" (click)="openApp(app.packageName)">
+							<div class="appBg flex h-12 w-12 items-center justify-center">
+								<img [src]="getAppIcon(app.packageName)" class="w-8" [alt]="app.label" />
+							</div>
+							<span class="prevent-select text-start">
+								{{ app.label }}
+							</span>
+						</button>
+					}
+				</div>
 			</div>
 		}
 		@if (suggestions().length > 0) {
