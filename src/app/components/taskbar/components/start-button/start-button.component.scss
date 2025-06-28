@@ -25,13 +25,13 @@
 			background:
 				conic-gradient(
 					from var(--angle-1) at 50% 50%,
-					rgba(var(--monet-accent-rgb), 0.25),
-					rgba(var(--monet-accent-rgb), 0) 5% 40%,
-					rgba(var(--monet-accent-rgb), 0.25) 50%,
-					rgba(var(--monet-accent-rgb), 0) 60% 95%,
-					rgba(var(--monet-accent-rgb), 0.25)
+					rgba(var(--monet-background-rgb), 0.25),
+					rgba(var(--monet-background-rgb), 0) 5% 40%,
+					rgba(var(--monet-background-rgb), 0.25) 50%,
+					rgba(var(--monet-background-rgb), 0) 60% 95%,
+					rgba(var(--monet-background-rgb), 0.25)
 				),
-				linear-gradient(180deg, rgba(var(--monet-background-rgb), 0.25), rgba(var(--monet-background-rgb), 0.25));
+				linear-gradient(180deg, rgba(var(--monet-accent-rgb), 0.25), rgba(var(--monet-accent-rgb), 0.25));
 			mask:
 				linear-gradient(#000 0 0) content-box,
 				linear-gradient(#000 0 0);
