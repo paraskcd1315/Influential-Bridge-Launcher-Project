@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, HostListener, inject } from '@angular/core';
+import { AfterViewInit, Component, computed, HostListener, inject } from '@angular/core';
 import { AppGridComponent } from './components/app-grid/app-grid.component';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 import { DateComponent } from './components/date/date.component';
@@ -12,6 +12,7 @@ import { TaskbarComponent } from './components/taskbar/taskbar.component';
 import { WeatherComponent } from './components/weather/weather.component';
 import { BridgeService } from './utils/bridge/bridge.service';
 import { HomescreenService } from './utils/homescreen/homescreen.service';
+import { PersistenceService } from './utils/persistence/persistence.service';
 import { TouchStateService } from './utils/touch-state/touch-state.service';
 
 @Component({
@@ -27,6 +28,29 @@ export class AppComponent implements AfterViewInit {
 	private readonly _homescreenService = inject(HomescreenService);
 	private readonly _startMenuService = inject(StartMenuService);
 	private readonly _touchState = inject(TouchStateService);
+	private readonly _persistenceService = inject(PersistenceService);
+
+	settings = this._persistenceService.settingsStore;
+
+	enableDateSetting = computed(() => {
+		return this.settings().showHideHomescreenDate ?? true;
+	});
+
+	enableStatusbarSetting = computed(() => {
+		return this.settings().showHideStatusbar ?? true;
+	});
+
+	enableSpotlightSetting = computed(() => {
+		return this.settings().enableSpotlight ?? true;
+	});
+
+	enableMediaWidgetSetting = computed(() => {
+		return this.settings().enableMediaWidget ?? true;
+	});
+
+	enableWeatherWidgetSetting = computed(() => {
+		return this.settings().enableWeatherWidget ?? true;
+	});
 
 	ngAfterViewInit(): void {
 		this._injectMonetColorsToCss();

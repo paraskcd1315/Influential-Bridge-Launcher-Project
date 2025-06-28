@@ -8,7 +8,7 @@
 		<div class="flex items-center justify-between gap-2">
 			<span>Show/Hide unthemed icons</span>
 			<label class="switch">
-				<input type="checkbox" checked />
+				<input name="showHideUnthemedIcons" type="checkbox" [checked]="settings().showHideUnthemedIcons" (change)="applyChange($event)" />
 				<span class="slider round">
 					<div class="toggle"></div>
 				</span>
@@ -17,7 +17,7 @@
 		<div class="flex items-center justify-between gap-2">
 			<span>Show/Hide homescreen date</span>
 			<label class="switch">
-				<input type="checkbox" checked />
+				<input name="showHideHomescreenDate" type="checkbox" (change)="applyChange($event)" [checked]="settings().showHideHomescreenDate" />
 				<span class="slider round">
 					<div class="toggle"></div>
 				</span>
@@ -26,7 +26,7 @@
 		<div class="flex items-center justify-between gap-2">
 			<span>Show/Hide statusbar</span>
 			<label class="switch">
-				<input type="checkbox" checked />
+				<input name="showHideStatusbar" type="checkbox" (change)="applyChange($event)" [checked]="settings().showHideStatusbar" />
 				<span class="slider round">
 					<div class="toggle"></div>
 				</span>
@@ -35,7 +35,7 @@
 		<div class="flex items-center justify-between gap-2">
 			<span>Show/Hide notification badges</span>
 			<label class="switch">
-				<input type="checkbox" checked />
+				<input name="showHideNotificationBadges" type="checkbox" (change)="applyChange($event)" [checked]="settings().showHideNotificationBadges" />
 				<span class="slider round">
 					<div class="toggle"></div>
 				</span>
@@ -44,20 +44,24 @@
 		<div class="flex items-center justify-between gap-2">
 			<span>Show/Hide homescreen icon labels</span>
 			<label class="switch">
-				<input type="checkbox" checked />
+				<input name="showHideHomescreenIconLabels" type="checkbox" (change)="applyChange($event)" [checked]="settings().showHideHomescreenIconLabels" />
 				<span class="slider round">
 					<div class="toggle"></div>
 				</span>
 			</label>
 		</div>
-		<div class="flex items-center justify-between gap-2">
-			<span>Change accent color</span>
-			<input type="color" value="" id="colorPicker" />
-		</div>
-		<div class="flex items-center justify-between gap-2">
-			<span>Change background color</span>
-			<input type="color" value="#e0ffee" id="colorPicker" />
-		</div>
+	</div>
+</div>
+<div class="container flex flex-col p-4">
+	<div class="flex items-center justify-between gap-2">
+		<span>Change accent color</span>
+		<input type="color" [value]="monetColors.accent" id="colorPicker" />
+	</div>
+</div>
+<div class="container flex flex-col p-4">
+	<div class="flex items-center justify-between gap-2">
+		<span>Change background color</span>
+		<input type="color" [value]="monetColors.background" id="colorPicker" />
 	</div>
 </div>
 <!-- Calendar -->
@@ -70,7 +74,7 @@
 		<div class="flex items-center justify-between gap-2">
 			<span>Enable/Disable calendar in start menu</span>
 			<label class="switch">
-				<input type="checkbox" checked />
+				<input name="showHideStartMenuCalendar" type="checkbox" (change)="applyChange($event)" [checked]="settings().showHideStartMenuCalendar" />
 				<span class="slider round">
 					<div class="toggle"></div>
 				</span>
@@ -88,7 +92,7 @@
 		<div class="flex items-center justify-between gap-2">
 			<span>Enable/Disable spotlight search</span>
 			<label class="switch">
-				<input type="checkbox" checked />
+				<input name="enableSpotlight" type="checkbox" (change)="applyChange($event)" [checked]="settings().enableSpotlight" />
 				<span class="slider round">
 					<div class="toggle"></div>
 				</span>
@@ -106,7 +110,7 @@
 		<div class="flex items-center justify-between gap-2">
 			<span>Enable/Disable weather widget</span>
 			<label class="switch">
-				<input type="checkbox" checked />
+				<input name="enableWeatherWidget" type="checkbox" (change)="applyChange($event)" [checked]="settings().enableWeatherWidget" />
 				<span class="slider round">
 					<div class="toggle"></div>
 				</span>
@@ -124,7 +128,7 @@
 		<div class="flex items-center justify-between gap-2">
 			<span>Enable/Disable media widget</span>
 			<label class="switch">
-				<input type="checkbox" checked />
+				<input name="enableMediaWidget" type="checkbox" (change)="applyChange($event)" [checked]="settings().enableMediaWidget" />
 				<span class="slider round">
 					<div class="toggle"></div>
 				</span>
@@ -139,10 +143,10 @@
 		<div>Miscellaneous</div>
 	</div>
 	<div class="flex flex-col gap-2 pt-2">
-		<button class="container flex items-center justify-center gap-2 p-4 text-center">Open system wallpaper picker</button>
+		<button class="container flex items-center justify-center gap-2 p-4 text-center" (click)="openWallpaperPicker()">Open system wallpaper picker</button>
 		<button class="container flex items-center justify-center gap-2 p-4 text-center" (click)="openBridgeSettings()">Open bridge settings</button>
-		<button class="danger container flex items-center justify-center gap-2 p-4 text-center text-red-300">Reset settings</button>
-		<button class="danger container flex items-center justify-center gap-2 p-4 text-center text-red-300">Reset pinned apps</button>
+		<button class="danger container flex items-center justify-center gap-2 p-4 text-center text-red-300" (click)="resetSettings()">Reset settings</button>
+		<button class="danger container flex items-center justify-center gap-2 p-4 text-center text-red-300" (click)="resetPinnedApps()">Reset pinned apps</button>
 	</div>
 </div>
 <!-- Miscellaneous -->

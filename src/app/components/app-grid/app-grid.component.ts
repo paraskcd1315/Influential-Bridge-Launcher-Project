@@ -36,6 +36,8 @@ export class AppGridComponent implements AfterViewInit {
 
 	apps = this._persistenceService.pinnedAppsStore as any;
 
+	settings = this._persistenceService.settingsStore;
+
 	Object = Object;
 
 	private touchStartX = 0;
@@ -57,7 +59,7 @@ export class AppGridComponent implements AfterViewInit {
 
 	paginatedApps = computed(() => {
 		const allApps = this.apps();
-		const pageSize = 20;
+		const pageSize = this.settings().pageSize ?? 20;
 		const pages: Record<number, (BridgeInstalledAppInfo | null)[]> = {};
 		this.appIndexMap.clear();
 
@@ -69,7 +71,7 @@ export class AppGridComponent implements AfterViewInit {
 				pageData.push(null);
 			}
 			// Only add the page if at least one entry is not null
-			if (pageData.some((app) => app !== null) || (this._tempExtendedPageAdded && i + pageSize >= allApps.length - 20)) {
+			if (pageData.some((app) => app !== null) || (this._tempExtendedPageAdded && i + pageSize >= allApps.length - (this.settings().pageSize ?? 20))) {
 				pages[page] = pageData;
 				for (let j = 0; j < pageData.length; j++) {
 					this.appIndexMap.set(i + j, pageData[j] ?? null);
@@ -238,9 +240,9 @@ export class AppGridComponent implements AfterViewInit {
 
 		if (this._tempExtendedPageAdded) {
 			const apps = [...this._persistenceService.pinnedAppsStore()];
-			const hasNonNullInLastPage = apps.slice(-20).some((app) => app !== null);
+			const hasNonNullInLastPage = apps.slice(-(this.settings().pageSize ?? 20)).some((app) => app !== null);
 			if (!hasNonNullInLastPage) {
-				this._persistenceService.updateIndex(apps.slice(0, -20));
+				this._persistenceService.updateIndex(apps.slice(0, -(this.settings().pageSize ?? 20)));
 			}
 			this._tempExtendedPageAdded = false;
 		}
@@ -287,11 +289,11 @@ export class AppGridComponent implements AfterViewInit {
 
 			const apps = [...this._persistenceService.pinnedAppsStore()];
 			const totalSlots = apps.length;
-			const lastPageSlots = totalSlots % 20;
+			const lastPageSlots = totalSlots % (this.settings().pageSize ?? 20);
 
 			if (!this._tempExtendedPageAdded) {
 				// Add a new page of empty slots
-				for (let i = 0; i < 20; i++) apps.push(null);
+				for (let i = 0; i < (this.settings().pageSize ?? 20); i++) apps.push(null);
 				this._persistenceService.updateIndex(apps);
 				this._tempExtendedPageAdded = true;
 			}

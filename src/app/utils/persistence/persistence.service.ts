@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
-import { PINNED_APPS_KEY, PINNED_DOCK_APPS_KEY } from '../constants';
-import { NullableBridgeApp } from './persistence.types';
+import { INFLUENTIAL_SETTINGS_KEY, PINNED_APPS_KEY, PINNED_DOCK_APPS_KEY } from '../constants';
+import { ISettings, NullableBridgeApp } from './persistence.types';
 
 @Injectable({
 	providedIn: 'root',
@@ -9,14 +9,23 @@ import { NullableBridgeApp } from './persistence.types';
 export class PersistenceService {
 	pinnedAppsStore = signal<NullableBridgeApp[]>([]);
 	pinnedDockAppsStore = signal<BridgeInstalledAppInfo[]>([]);
+	settingsStore = signal<Partial<ISettings>>({});
 
 	constructor() {
 		this._loadApps();
+		this._loadSettings();
 	}
 
 	clearApps() {
 		localStorage.removeItem(PINNED_APPS_KEY);
 		localStorage.removeItem(PINNED_DOCK_APPS_KEY);
+	}
+
+	updateSettings(settings: Partial<ISettings>) {
+		this.settingsStore.update((currentSettings) => {
+			return { ...currentSettings, ...settings };
+		});
+		this._saveSettings();
 	}
 
 	addPinnedApp(app: BridgeInstalledAppInfo) {
@@ -55,6 +64,39 @@ export class PersistenceService {
 		if (pinnedDockApps) {
 			this.pinnedDockAppsStore.set(JSON.parse(pinnedDockApps));
 		}
+	}
+
+	private _loadSettings() {
+		const settings = localStorage.getItem(INFLUENTIAL_SETTINGS_KEY);
+		if (settings) {
+			try {
+				const parsedSettings = JSON.parse(settings);
+				if (parsedSettings) {
+					this.settingsStore.set(parsedSettings as ISettings);
+				}
+			} catch (error) {
+				console.error('Failed to parse settings from localStorage:', error);
+			}
+		} else {
+			// Initialize with default settings if not found
+			this.settingsStore.set({
+				showHideUnthemedIcons: true,
+				showHideHomescreenDate: true,
+				showHideStatusbar: true,
+				showHideNotificationBadges: true,
+				showHideHomescreenIconLabels: true,
+				showHideStartMenuCalendar: true,
+				enableSpotlight: true,
+				enableWeatherWidget: true,
+				enableMediaWidget: true,
+				pageSize: 20,
+			});
+		}
+	}
+
+	private _saveSettings() {
+		const settings = this.settingsStore();
+		localStorage.setItem(INFLUENTIAL_SETTINGS_KEY, JSON.stringify(settings));
 	}
 
 	private _saveApps() {

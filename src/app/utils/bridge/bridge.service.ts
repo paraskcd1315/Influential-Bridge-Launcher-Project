@@ -198,7 +198,7 @@ export class BridgeService {
 	}
 
 	requestContactCall(phoneNumber: string) {
-		this.bridge().requestContactCall(phoneNumber);
+		this.bridge().requestContactCall?.(phoneNumber);
 	}
 
 	requestMessagingContact(phoneNumber: string, app: string, packageName?: string) {
@@ -207,6 +207,10 @@ export class BridgeService {
 		} else {
 			this.bridge().requestMessagingContact(phoneNumber, app);
 		}
+	}
+
+	requestChangeSystemWallpaper() {
+		this.bridge().requestChangeSystemWallpaper?.();
 	}
 
 	private _injectBridgeMockInDev() {

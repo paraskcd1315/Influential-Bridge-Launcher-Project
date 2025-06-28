@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, HostListener, inject, output, viewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, HostListener, inject, output, viewChild } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { BridgeService } from '../../utils/bridge/bridge.service';
 import { IconsService } from '../../utils/icons/icons.service';
@@ -22,6 +22,12 @@ export class TaskbarComponent implements AfterViewInit {
 	private readonly _persistenceService = inject(PersistenceService);
 	private readonly _contextMenuService = inject(ContextMenuService);
 	pinnedApps = this._persistenceService.pinnedDockAppsStore;
+	settings = this._persistenceService.settingsStore;
+
+	statusbarEnabled = computed(() => {
+		return this.settings().showHideStatusbar;
+	});
+
 	openStartMenuEventEmitter = output({ alias: 'openStartMenu' });
 	taskbarRef = viewChild<ElementRef>('taskbarRef');
 

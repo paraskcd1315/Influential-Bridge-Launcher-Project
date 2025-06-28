@@ -1,20 +1,22 @@
-<button id="statusbar" class="relative z-50 flex items-center justify-end gap-2 text-shadow-lg" (click)="expandNotificationShade()">
-	<i [class]="wifiBars[wifiLevel()]"></i>
-	<div class="flex items-center gap-1">
-		@if (mobileNetworkType() != undefined && mobileNetworkType().length > 0) {
-			<span class="mb-[5px] text-xs">{{ mobileNetworkType() }}</span>
-		}
-		<i [class]="telephonyBars[mobileLevel()]"></i>
-	</div>
-	<div class="flex items-center gap-1">
-		<span class="mb-[5px] text-xs">{{ batteryLevel() }}%</span>
-		@if (batteryIsCharging()) {
-			<i [class]="batteryCharging"></i>
-		} @else {
-			<i [class]="getBatteryIcon()"></i>
-		}
-	</div>
-</button>
+@if (statusbarEnabled()) {
+	<button id="statusbar" class="relative z-50 flex items-center justify-end gap-2 text-shadow-lg" (click)="expandNotificationShade()">
+		<i [class]="wifiBars[wifiLevel()]"></i>
+		<div class="flex items-center gap-1">
+			@if (mobileNetworkType() != undefined && mobileNetworkType().length > 0) {
+				<span class="mb-[5px] text-xs">{{ mobileNetworkType() }}</span>
+			}
+			<i [class]="telephonyBars[mobileLevel()]"></i>
+		</div>
+		<div class="flex items-center gap-1">
+			<span class="mb-[5px] text-xs">{{ batteryLevel() }}%</span>
+			@if (batteryIsCharging()) {
+				<i [class]="batteryCharging"></i>
+			} @else {
+				<i [class]="getBatteryIcon()"></i>
+			}
+		</div>
+	</button>
+}
 <div #taskbarRef id="taskbar" class="flex items-center justify-between rounded-lg p-4 shadow-2xl">
 	<div class="relative z-50 flex items-center gap-5">
 		<app-start-button (startEmitter)="openStartMenuEventEmitter.emit()" />

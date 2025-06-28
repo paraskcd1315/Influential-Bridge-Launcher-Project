@@ -1,19 +1,33 @@
 <img id="wallpaper" [src]="wallpaper()" class="pointer-events-none fixed top-0 left-0 h-[110vh] w-[110vw] object-cover" alt="wallpaper" />
 
+@if (enableMediaWidgetSetting() || enableWeatherWidgetSetting()) {
+	<div class="media-weather-scroll absolute bottom-32 flex w-full snap-x snap-mandatory overflow-x-auto">
+		@if (enableWeatherWidgetSetting()) {
+			<app-weather />
+		}
+		@if (enableMediaWidgetSetting()) {
+			<app-media-player />
+		}
+	</div>
+}
+
 <div class="absolute bottom-0 flex w-full flex-col">
 	<app-start-menu [ngClass]="{ 'pointer-events-none': !startMenuActive(), 'z-50': startMenuActive() }" [active]="startMenuActive()" />
 	<app-taskbar (openStartMenu)="openStartMenu()" />
 </div>
 
-<div class="media-weather-scroll absolute bottom-32 flex w-full snap-x snap-mandatory overflow-x-auto">
-	<app-weather />
-	<app-media-player />
-</div>
+@if (enableDateSetting()) {
+	<div class="absolute top-0 flex w-full flex-col" [ngClass]="{ 'pointer-events-none z-0': startMenuActive() }">
+		<app-date />
+	</div>
+}
 
-<div class="absolute top-0 flex w-full flex-col" [ngClass]="{ 'pointer-events-none z-0': startMenuActive() }">
-	<app-date />
+<div class="absolute bottom-64 mb-22 flex w-full flex-col" [ngClass]="{ 'pointer-events-none z-0': startMenuActive() }">
 	<app-app-grid />
 </div>
 
 <app-context-menu />
-<app-spotlight />
+
+@if (enableSpotlightSetting()) {
+	<app-spotlight />
+}
