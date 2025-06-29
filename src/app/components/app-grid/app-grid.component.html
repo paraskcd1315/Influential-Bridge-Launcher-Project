@@ -4,10 +4,10 @@
 			<div class="grid grid-cols-4 gap-8">
 				@for (app of paginatedApps()[+pageNumber]; let i = $index; track trackApp(i, app)) {
 					@if (app) {
-						<div class="flex items-start gap-2">
+						<div class="relative flex items-start gap-2">
 							@if (editMode()) {
 								<button
-									class="animate-wiggle absolute z-50 -ml-8 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full border border-slate-400 bg-white/80 text-black backdrop-blur-2xl"
+									class="animate-wiggle absolute z-50 -ml-4 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full border border-slate-400 bg-white/80 text-black backdrop-blur-2xl"
 									(click)="openDeleteDialog($event, app)"
 								>
 									<i class="icon-ic_fluent_dismiss_12_regular mt-1 text-xs"></i>

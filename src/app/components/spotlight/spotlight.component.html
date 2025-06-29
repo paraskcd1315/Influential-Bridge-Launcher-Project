@@ -69,7 +69,7 @@
 				<div class="flex max-h-64 flex-col gap-2 overflow-y-auto px-4 pb-2" data-scrollable>
 					@for (app of filteredApps(); track app.packageName) {
 						<button class="flex items-center gap-2" (click)="openApp(app.packageName)">
-							<div class="appBg flex h-12 w-12 items-center justify-center">
+							<div class="appBg relative flex h-12 w-12 items-center justify-center">
 								<img [src]="getAppIcon(app.packageName)" class="w-8" [alt]="app.label" />
 							</div>
 							<span class="prevent-select text-start">
