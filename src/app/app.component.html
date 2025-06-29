@@ -18,7 +18,7 @@
 
 @if (enableDateSetting()) {
 	<div class="absolute top-0 flex w-full flex-col" [ngClass]="{ 'pointer-events-none z-0': startMenuActive() }">
-		<app-date />
+		<app-date [ngClass]="{ extraPadding: moveAppGrid() }" />
 	</div>
 }
 

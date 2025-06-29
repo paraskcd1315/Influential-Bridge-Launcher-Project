@@ -1,11 +1,16 @@
 @reference "tailwindcss";
 
 :host {
-	@apply flex items-start justify-between px-12 pt-14;
+	@apply flex items-start justify-between px-12 pt-18;
+
+	&.extraPadding {
+		@apply pt-14;
+	}
 
 	#date {
 		color: var(--monet-background); // default (light mode)
 	}
+
 	#cancelButton {
 		color: var(--monet-textPrimary);
 		background-color: rgba(var(--monet-background-rgb), 0.8);
