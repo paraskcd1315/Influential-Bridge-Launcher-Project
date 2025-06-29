@@ -4,7 +4,6 @@
 			@if (weatherData() && weatherData().length > 0) {
 				<div class="flex items-center gap-4">
 					<img class="w-12 shrink-0 object-contain opacity-75" [src]="getWeatherIcon()" alt="" />
-
 					<div class="text-align-left flex w-full flex-col items-start opacity-50">
 						<span class="text-align-left font-bold">{{ cityName() }}</span>
 						<span class="text-align-left">{{ weatherData()![0].main }}</span>

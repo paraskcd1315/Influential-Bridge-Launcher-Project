@@ -1,7 +1,7 @@
 @reference "tailwindcss";
 
 :host {
-	@apply flex items-start justify-between px-12 pt-18;
+	@apply flex items-start justify-between px-12 pt-14;
 
 	#date {
 		color: var(--monet-background); // default (light mode)

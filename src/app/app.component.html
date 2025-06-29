@@ -22,7 +22,7 @@
 	</div>
 }
 
-<div class="absolute bottom-64 mb-22 flex w-full flex-col" [ngClass]="{ 'pointer-events-none z-0': startMenuActive() }">
+<div class="absolute flex w-full flex-col" [ngClass]="{ 'pointer-events-none z-0': startMenuActive(), 'bottom-42 mb-2': moveAppGrid(), 'bottom-64 mb-22': !moveAppGrid() }">
 	<app-app-grid />
 </div>
 

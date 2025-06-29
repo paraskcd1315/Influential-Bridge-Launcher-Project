@@ -52,6 +52,10 @@ export class AppComponent implements AfterViewInit {
 		return this.settings().enableWeatherWidget ?? true;
 	});
 
+	moveAppGrid = computed(() => {
+		return !this.enableMediaWidgetSetting() && !this.enableWeatherWidgetSetting();
+	});
+
 	ngAfterViewInit(): void {
 		this._injectMonetColorsToCss();
 	}

@@ -37,5 +37,11 @@ export class SettingsTabComponent {
 		const settingsKey = target.name as keyof Partial<ISettings>;
 
 		this._persistenceService.updateSettings({ [settingsKey]: target.checked });
+
+		if (!this.settings().enableWeatherWidget && !this.settings().enableMediaWidget) {
+			this._persistenceService.updateSettings({ pageSize: 28 });
+		} else {
+			this._persistenceService.updateSettings({ pageSize: 20 });
+		}
 	}
 }

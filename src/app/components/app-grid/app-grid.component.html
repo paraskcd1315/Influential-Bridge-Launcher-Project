@@ -14,7 +14,7 @@
 								</button>
 							}
 							<button
-								[attr.data-app-index]="(+pageNumber - 1) * 20 + $index"
+								[attr.data-app-index]="(+pageNumber - 1) * pageSize() + $index"
 								class="flex w-full flex-col items-center justify-center"
 								[ngClass]="{ 'animate-wiggle': editMode() }"
 								(touchstart)="onTouchStart($event, app, $index)"
@@ -48,8 +48,11 @@
 					} @else {
 						<div
 							class="h-16 w-16 rounded border-2 border-dashed border-white/30 shadow-2xl shadow-white/50"
-							[ngClass]="{ 'animate-fade-in opacity-100': dragOverApp() === null && dropTargetIndex === (+pageNumber - 1) * 20 + $index, 'opacity-0': !(dragOverApp() === null && dropTargetIndex === (+pageNumber - 1) * 20 + $index) }"
-							[attr.data-app-index]="(+pageNumber - 1) * 20 + $index"
+							[ngClass]="{
+								'animate-fade-in opacity-100': dragOverApp() === null && dropTargetIndex === (+pageNumber - 1) * pageSize() + $index,
+								'opacity-0': !(dragOverApp() === null && dropTargetIndex === (+pageNumber - 1) * pageSize() + $index),
+							}"
+							[attr.data-app-index]="(+pageNumber - 1) * pageSize() + $index"
 						></div>
 					}
 				}

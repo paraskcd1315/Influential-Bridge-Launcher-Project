@@ -37,6 +37,7 @@ export class AppGridComponent implements AfterViewInit {
 	apps = this._persistenceService.pinnedAppsStore as any;
 
 	settings = this._persistenceService.settingsStore;
+	pageSize = computed(() => this.settings().pageSize ?? 20);
 
 	Object = Object;
 
@@ -140,8 +141,8 @@ export class AppGridComponent implements AfterViewInit {
 		const contextMenuHeight = 290;
 		let safeY = clientY;
 
-		if (clientY + contextMenuHeight > maxY) {
-			safeY = maxY - contextMenuHeight - 8;
+		if (clientY + contextMenuHeight + 72 > maxY) {
+			safeY = maxY - contextMenuHeight - 72;
 		}
 
 		const contextMenuWidth = 200;
