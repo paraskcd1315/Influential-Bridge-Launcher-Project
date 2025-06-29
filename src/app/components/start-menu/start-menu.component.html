@@ -1,20 +1,32 @@
 <div id="start-menu" class="flex max-h-[calc(100dvh-15rem)] flex-col items-center justify-between gap-4 overflow-y-hidden rounded-lg px-4 pt-4 text-white shadow-2xl backdrop-blur-2xl" [ngClass]="{ active: active() }">
 	<div class="container my-1 flex w-full items-center justify-center rounded-2xl">
-		<button [class.container]="selectedTab() === startMenuTab.Apps" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Apps)">Apps</button>
-		<button [class.container]="selectedTab() === startMenuTab.Calendar" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Calendar)">Calendar</button>
-		<button [class.container]="selectedTab() === startMenuTab.Contacts" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Contacts)">Contacts</button>
+		@if (enableAppsTab()) {
+			<button [class.container]="selectedTab() === startMenuTab.Apps" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Apps)">Apps</button>
+		}
+		@if (enableCalendarTab()) {
+			<button [class.container]="selectedTab() === startMenuTab.Calendar" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Calendar)">Calendar</button>
+		}
+		@if (enableContactsTab()) {
+			<button [class.container]="selectedTab() === startMenuTab.Contacts" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Contacts)">Contacts</button>
+		}
 		<button [class.container]="selectedTab() === startMenuTab.Settings" class="w-full p-3 text-center" (click)="selectTab(startMenuTab.Settings)">Settings</button>
 	</div>
 	<div #scrollAnchorContainer class="scroll-anchor-container animate-fade-in relative z-10 flex w-full flex-col gap-3 overflow-y-auto">
 		@switch (selectedTab()) {
 			@case (startMenuTab.Apps) {
-				<start-menu-apps-tab />
+				@if (enableAppsTab()) {
+					<start-menu-apps-tab />
+				}
 			}
 			@case (startMenuTab.Calendar) {
-				<start-menu-calendar-tab />
+				@if (enableCalendarTab()) {
+					<start-menu-calendar-tab />
+				}
 			}
 			@case (startMenuTab.Contacts) {
-				<start-menu-contacts />
+				@if (enableContactsTab()) {
+					<start-menu-contacts />
+				}
 			}
 			@case (startMenuTab.Settings) {
 				<start-menu-settings-tab />

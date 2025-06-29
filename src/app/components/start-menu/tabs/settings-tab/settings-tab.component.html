@@ -55,13 +55,37 @@
 <div class="container flex flex-col p-4">
 	<div class="flex items-center justify-between gap-2">
 		<span>Change accent color</span>
-		<input type="color" [value]="monetColors.accent" id="colorPicker" />
+		<input type="color" name="accent" [value]="colorSettings().accent" id="colorPicker" (change)="colorChange($event)" />
 	</div>
 </div>
 <div class="container flex flex-col p-4">
 	<div class="flex items-center justify-between gap-2">
 		<span>Change background color</span>
-		<input type="color" [value]="monetColors.background" id="colorPicker" />
+		<input type="color" name="background" [value]="colorSettings().background" id="colorPicker" (change)="colorChange($event)" />
+	</div>
+</div>
+<div class="container flex flex-col p-4">
+	<div class="flex items-center justify-between gap-2">
+		<span>Change Text color</span>
+		<input type="color" name="textPrimary" [value]="colorSettings().textPrimary" id="colorPicker" (change)="colorChange($event)" />
+	</div>
+</div>
+<!-- Apps -->
+<div class="container flex flex-col p-4">
+	<div class="text-shadow-xl flex items-center gap-2 text-xl font-bold">
+		<i class="icon-ic_fluent_apps_48_regular text-4xl"></i>
+		<div>Apps</div>
+	</div>
+	<div class="flex flex-col gap-2">
+		<div class="flex items-center justify-between gap-2">
+			<span>Enable/Disable apps in start menu</span>
+			<label class="switch">
+				<input name="showHideStartMenuApps" type="checkbox" (change)="applyChange($event)" [checked]="settings().showHideStartMenuApps" />
+				<span class="slider round">
+					<div class="toggle"></div>
+				</span>
+			</label>
+		</div>
 	</div>
 </div>
 <!-- Calendar -->
@@ -75,6 +99,24 @@
 			<span>Enable/Disable calendar in start menu</span>
 			<label class="switch">
 				<input name="showHideStartMenuCalendar" type="checkbox" (change)="applyChange($event)" [checked]="settings().showHideStartMenuCalendar" />
+				<span class="slider round">
+					<div class="toggle"></div>
+				</span>
+			</label>
+		</div>
+	</div>
+</div>
+<!-- Contacts -->
+<div class="container flex flex-col p-4">
+	<div class="text-shadow-xl flex items-center gap-2 text-xl font-bold">
+		<i class="icon-ic_fluent_book_contacts_24_regular text-4xl"></i>
+		<div>Contacts</div>
+	</div>
+	<div class="flex flex-col gap-2">
+		<div class="flex items-center justify-between gap-2">
+			<span>Enable/Disable contacts in start menu</span>
+			<label class="switch">
+				<input name="showHideStartMenuContacts" type="checkbox" (change)="applyChange($event)" [checked]="settings().showHideStartMenuContacts" />
 				<span class="slider round">
 					<div class="toggle"></div>
 				</span>
@@ -146,6 +188,7 @@
 		<button class="container flex items-center justify-center gap-2 p-4 text-center" (click)="openWallpaperPicker()">Open system wallpaper picker</button>
 		<button class="container flex items-center justify-center gap-2 p-4 text-center" (click)="openBridgeSettings()">Open bridge settings</button>
 		<button class="danger container flex items-center justify-center gap-2 p-4 text-center text-red-300" (click)="resetSettings()">Reset settings</button>
+		<button class="danger container flex items-center justify-center gap-2 p-4 text-center text-red-300" (click)="resetColors()">Reset color settings</button>
 		<button class="danger container flex items-center justify-center gap-2 p-4 text-center text-red-300" (click)="resetPinnedApps()">Reset pinned apps</button>
 	</div>
 </div>
@@ -157,6 +200,6 @@
 	</div>
 	<div class="flex flex-col gap-2 pt-2">
 		<span class="flex w-full items-center justify-center text-center text-3xl">Influential HS</span>
-		<span class="flex w-full items-center justify-center text-center">Version 0.1 (Build 202506151613)</span>
+		<span class="flex w-full items-center justify-center text-center">Version 0.1 (Build 202506290749)</span>
 	</div>
 </div>

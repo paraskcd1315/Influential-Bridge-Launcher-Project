@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, computed, ElementRef, HostListener, inject, output, viewChild } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, inject, output, viewChild } from '@angular/core';
 import { BridgeInstalledAppInfo } from '@bridgelauncher/api';
 import { BridgeService } from '../../utils/bridge/bridge.service';
 import { IconsService } from '../../utils/icons/icons.service';
@@ -15,7 +15,7 @@ import { StartButtonComponent } from './components/start-button/start-button.com
 	templateUrl: './taskbar.component.html',
 	styleUrl: './taskbar.component.scss',
 })
-export class TaskbarComponent implements AfterViewInit {
+export class TaskbarComponent {
 	private readonly _statusbarService = inject(StatusbarService);
 	private readonly _iconService = inject(IconsService);
 	private readonly _bridgeService = inject(BridgeService);
@@ -59,14 +59,6 @@ export class TaskbarComponent implements AfterViewInit {
 	mobileLevel = this._statusbarService.mobileLevel;
 	mobileNetworkType = this._statusbarService.mobileNetworkType;
 	notifications = this._statusbarService.notificationCounts;
-
-	ngAfterViewInit(): void {
-		const baseAccent = this._bridgeService.getMonetColors().accent.trim() || '#FF6688';
-		document.querySelectorAll('.icon-mask').forEach((el) => {
-			const randomColor = this._accentVariant(baseAccent, 10); // hasta ±40 por canal
-			(el as HTMLElement).style.backgroundColor = randomColor;
-		});
-	}
 
 	getAppIcon(packageName: string) {
 		// Attempt to match any icon filename containing the iconName

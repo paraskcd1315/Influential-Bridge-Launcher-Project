@@ -4,12 +4,14 @@ import { BridgeService } from '../../utils/bridge/bridge.service';
 import { ICalendar } from '../../utils/bridge/calendar.types';
 import { IContact } from '../../utils/bridge/contact.types';
 import { PACKAGE_NAME_ALIASES } from '../../utils/constants';
+import { PersistenceService } from '../../utils/persistence/persistence.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class StartMenuService {
 	private readonly _bridgeService = inject(BridgeService);
+	private readonly _persistenceService = inject(PersistenceService);
 	private readonly _clock = signal(new Date());
 
 	activeLetter = signal<string | undefined>(undefined);
@@ -19,6 +21,7 @@ export class StartMenuService {
 
 	apps = this._bridgeService.apps;
 	contacts = this._bridgeService.contacts;
+	settings = this._persistenceService.settingsStore;
 
 	constructor() {
 		effect(() => {

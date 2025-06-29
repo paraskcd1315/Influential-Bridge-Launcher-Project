@@ -11,6 +11,7 @@ import { StartMenuService } from './components/start-menu/start-menu.service';
 import { TaskbarComponent } from './components/taskbar/taskbar.component';
 import { WeatherComponent } from './components/weather/weather.component';
 import { BridgeService } from './utils/bridge/bridge.service';
+import { HEXTORGB } from './utils/colors/colors.utils';
 import { HomescreenService } from './utils/homescreen/homescreen.service';
 import { PersistenceService } from './utils/persistence/persistence.service';
 import { TouchStateService } from './utils/touch-state/touch-state.service';
@@ -31,6 +32,7 @@ export class AppComponent implements AfterViewInit {
 	private readonly _persistenceService = inject(PersistenceService);
 
 	settings = this._persistenceService.settingsStore;
+	colorSettings = this._persistenceService.colorSettingsStore;
 
 	enableDateSetting = computed(() => {
 		return this.settings().showHideHomescreenDate ?? true;
@@ -184,16 +186,25 @@ export class AppComponent implements AfterViewInit {
 		if (!palette) return;
 
 		for (const [key, value] of Object.entries(palette)) {
-			const hex = value;
-			const rgb = this._hexToRgb(hex);
-			document.documentElement.style.setProperty(`--monet-${key}`, value);
+			let newValue = value;
+			switch (key) {
+				case 'accent':
+					newValue = this.colorSettings().accent;
+					break;
+				case 'background':
+					newValue = this.colorSettings().background;
+					break;
+				case 'textPrimary':
+					newValue = this.colorSettings().textPrimary;
+					break;
+				default:
+					newValue = value;
+					break;
+			}
+			const hex = newValue;
+			const rgb = HEXTORGB(hex);
+			document.documentElement.style.setProperty(`--monet-${key}`, hex);
 			document.documentElement.style.setProperty(`--monet-${key}-rgb`, rgb);
 		}
-	}
-
-	private _hexToRgb(hex: string): string {
-		const match = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
-		if (!match) return '0,0,0';
-		return `${parseInt(match[1], 16)},${parseInt(match[2], 16)},${parseInt(match[3], 16)}`;
 	}
 }

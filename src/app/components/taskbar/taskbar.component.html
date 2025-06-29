@@ -23,7 +23,7 @@
 		<div class="flex w-full gap-x-5 overflow-x-auto whitespace-nowrap">
 			@for (app of pinnedApps(); track app) {
 				<button class="relative shrink-0" (click)="openApp(app.packageName)" (contextmenu)="onContextMenu($event, app)">
-					<div [ngStyle]="{ '--icon-url': 'url(' + getAppIcon(app.packageName) + ')' }" class="icon-mask w-12"></div>
+					<div [style.webkitMaskImage]="'url(' + getAppIcon(app.packageName) + ')'" [style.maskImage]="'url(' + getAppIcon(app.packageName) + ')'" class="icon-mask w-12" [style.backgroundColor]="'var(--monet-accent)'"></div>
 					@if (notifications() && notifications()[app.packageName]) {
 						<div class="absolute top-0 -right-2 h-2 w-2 shrink-0 rounded-full bg-white/80 backdrop-blur-2xl"></div>
 					}

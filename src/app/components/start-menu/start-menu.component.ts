@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, ElementRef, HostListener, inject, input, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, HostListener, inject, input, OnInit, signal, viewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { IconsService } from '../../utils/icons/icons.service';
 import { ContextMenuService } from '../context-menu/context-menu.service';
 import { StartMenuService } from './start-menu.service';
 import { StartMenuTab } from './start-menu.types';
@@ -17,12 +16,11 @@ import { SettingsTabComponent } from './tabs/settings-tab/settings-tab.component
 	templateUrl: './start-menu.component.html',
 	styleUrl: './start-menu.component.scss',
 })
-export class StartMenuComponent {
+export class StartMenuComponent implements OnInit {
 	Object = Object;
 	startMenuTab = StartMenuTab;
 	isoDate = new Date().toISOString();
 
-	private readonly _iconService = inject(IconsService);
 	private readonly _startMenuService = inject(StartMenuService);
 	private readonly _contextMenuService = inject(ContextMenuService);
 	active = input<boolean>();
@@ -34,6 +32,10 @@ export class StartMenuComponent {
 
 	activeLetter = this._startMenuService.activeLetter;
 
+	enableCalendarTab = computed(() => this._startMenuService.settings().showHideStartMenuCalendar);
+	enableContactsTab = computed(() => this._startMenuService.settings().showHideStartMenuContacts);
+	enableAppsTab = computed(() => this._startMenuService.settings().showHideStartMenuApps);
+
 	constructor() {
 		effect(() => {
 			if (this.active()) {
@@ -42,6 +44,10 @@ export class StartMenuComponent {
 				}, 0);
 			}
 		});
+	}
+
+	ngOnInit(): void {
+		this._setActiveTab();
 	}
 
 	selectTab(tab: StartMenuTab) {
@@ -53,5 +59,13 @@ export class StartMenuComponent {
 	@HostListener('document:click', ['$event'])
 	onClick(event: MouseEvent) {
 		this._contextMenuService.closeContextMenu();
+	}
+
+	private _setActiveTab() {
+		if (this.enableAppsTab()) {
+			this.selectedTab.set(StartMenuTab.Apps);
+		} else {
+			this.selectedTab.set(StartMenuTab.Settings);
+		}
 	}
 }

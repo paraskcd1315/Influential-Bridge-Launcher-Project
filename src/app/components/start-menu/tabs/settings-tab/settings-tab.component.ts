@@ -1,12 +1,12 @@
 import { Component, inject } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { BridgeService } from '../../../../utils/bridge/bridge.service';
-import { IMonetColors } from '../../../../utils/bridge/monet.types';
 import { PersistenceService } from '../../../../utils/persistence/persistence.service';
-import { ISettings } from '../../../../utils/persistence/persistence.types';
+import { ISettings, ISettingsColors } from '../../../../utils/persistence/persistence.types';
 
 @Component({
 	selector: 'start-menu-settings-tab',
-	imports: [],
+	imports: [MatIconModule],
 	templateUrl: './settings-tab.component.html',
 	styleUrl: './settings-tab.component.scss',
 })
@@ -15,10 +15,7 @@ export class SettingsTabComponent {
 	private readonly _persistenceService = inject(PersistenceService);
 
 	settings = this._persistenceService.settingsStore;
-
-	get monetColors(): IMonetColors {
-		return this._bridgeService.getMonetColors();
-	}
+	colorSettings = this._persistenceService.colorSettingsStore;
 
 	openBridgeSettings() {
 		this._bridgeService.requestOpenBridgeSettings();
@@ -28,9 +25,17 @@ export class SettingsTabComponent {
 		this._bridgeService.requestChangeSystemWallpaper();
 	}
 
-	resetSettings() {}
+	resetSettings() {
+		this._persistenceService.resetSettings();
+	}
 
-	resetPinnedApps() {}
+	resetPinnedApps() {
+		this._persistenceService.clearApps();
+	}
+
+	resetColors() {
+		this._persistenceService.resetColors();
+	}
 
 	applyChange(event: Event) {
 		const target = event.target as HTMLInputElement;
@@ -43,5 +48,12 @@ export class SettingsTabComponent {
 		} else {
 			this._persistenceService.updateSettings({ pageSize: 20 });
 		}
+	}
+
+	colorChange(event: Event) {
+		const target = event.target as HTMLInputElement;
+		const colorKey = target.name as keyof ISettingsColors;
+
+		this._persistenceService.updateColorSettings({ [colorKey]: target.value });
 	}
 }

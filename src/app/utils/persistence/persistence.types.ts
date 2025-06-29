@@ -9,8 +9,16 @@ export interface ISettings {
 	showHideNotificationBadges: boolean;
 	showHideHomescreenIconLabels: boolean;
 	showHideStartMenuCalendar: boolean;
+	showHideStartMenuContacts: boolean;
+	showHideStartMenuApps: boolean;
 	enableSpotlight: boolean;
 	enableWeatherWidget: boolean;
 	enableMediaWidget: boolean;
 	pageSize: number;
+}
+
+export interface ISettingsColors {
+	accent: string;
+	background: string;
+	textPrimary: string;
 }
