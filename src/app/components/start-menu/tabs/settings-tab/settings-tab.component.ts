@@ -41,6 +41,10 @@ export class SettingsTabComponent {
 		this.invokeDialog.emit(DialogAction.ResetColors);
 	}
 
+	addSpotlightCurrencyApiKey() {
+		this.invokeDialog.emit(DialogAction.AddCurrencyApiKey);
+	}
+
 	applyChange(event: Event) {
 		const target = event.target as HTMLInputElement;
 		const settingsKey = target.name as keyof Partial<ISettings>;

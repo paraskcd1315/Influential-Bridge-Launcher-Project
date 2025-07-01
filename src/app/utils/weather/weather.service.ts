@@ -16,7 +16,7 @@ export class WeatherService {
 	private readonly apiKey = computed(() => this._persistenceService.apiKeysStore().weatherApiKey);
 	private readonly apiUrl = computed(() => {
 		if (this.apiKey() && this._statusbarService.location().latitude && this._statusbarService.location().longitude) {
-			return `https://api.openweathermap.org/data/2.5/weather?lat=${this._statusbarService.location().latitude}&lon=${this._statusbarService.location().longitude}&appid=${this.apiKey}&units=metric`;
+			return `https://api.openweathermap.org/data/2.5/weather?lat=${this._statusbarService.location().latitude}&lon=${this._statusbarService.location().longitude}&appid=${this.apiKey()}&units=metric`;
 		} else {
 			return '';
 		}

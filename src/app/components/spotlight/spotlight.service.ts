@@ -1,9 +1,9 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { environment } from '../../../environments/environment';
 import { AppGridService } from '../../utils/app-grid/app-grid.service';
 import { BridgeService } from '../../utils/bridge/bridge.service';
 import { PACKAGE_NAME_ALIASES } from '../../utils/constants';
 import { evaluateMathExpression } from '../../utils/math/math.utils';
+import { PersistenceService } from '../../utils/persistence/persistence.service';
 import { StartMenuService } from '../start-menu/start-menu.service';
 
 @Injectable({
@@ -13,6 +13,7 @@ export class SpotlightService {
 	private readonly _appgridService = inject(AppGridService);
 	private readonly _bridgeService = inject(BridgeService);
 	private readonly _startMenuService = inject(StartMenuService);
+	private readonly _persistenceService = inject(PersistenceService);
 
 	private hasPushedState = false;
 
@@ -22,6 +23,7 @@ export class SpotlightService {
 	searchQuery = signal<string | undefined>(undefined);
 
 	mathResult = signal<{ value: number; unit?: string; human?: string; altHuman?: string } | null>(null);
+	currencyApiKey = computed(() => this._persistenceService.apiKeysStore().currencyApiKey);
 
 	constructor() {
 		window.addEventListener('popstate', this.handleBackButton);
@@ -33,7 +35,7 @@ export class SpotlightService {
 				return;
 			}
 
-			evaluateMathExpression(query, environment.currencyApiKey).then((result) => {
+			evaluateMathExpression(query, this.currencyApiKey()).then((result) => {
 				this.mathResult.set(result);
 			});
 		});
