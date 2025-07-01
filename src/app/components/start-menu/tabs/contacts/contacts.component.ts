@@ -95,7 +95,6 @@ export class ContactsComponent implements AfterViewInit {
 
 	constructor() {
 		effect(() => {
-			console.log(this.distributedContacts());
 			clearTimeout(this.debounceTimeout);
 			const currentValue = this.searchQuery();
 			this.debounceTimeout = setTimeout(() => {

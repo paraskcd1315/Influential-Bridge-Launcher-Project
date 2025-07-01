@@ -22,3 +22,8 @@ export interface ISettingsColors {
 	background: string;
 	textPrimary: string;
 }
+
+export interface IApiKeys {
+	weatherApiKey: string;
+	currencyApiKey: string;
+}

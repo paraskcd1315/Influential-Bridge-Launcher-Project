@@ -1,0 +1,42 @@
+<div id="dialog" *ngIf="isVisible()" [class.animate-fade-out]="isHiding()" class="animate-fade-in fixed top-1/2 left-1/2 z-60 flex w-3/4 -translate-x-1/2 -translate-y-1/2 flex-col gap-2 rounded-lg py-4 text-white shadow-2xl backdrop-blur-2xl">
+	@switch (dialogType()) {
+		@case (DialogType.Prompt) {
+			<ng-container *ngTemplateOutlet="promptTemplate"></ng-container>
+		}
+		@case (DialogType.Confirmation) {
+			<ng-container *ngTemplateOutlet="confirmationTemplate"></ng-container>
+		}
+	}
+
+	<ng-template #headerTemplate>
+		<div class="relative z-100 flex items-center justify-between px-4">
+			<h1 class="font-bold">{{ dialogConfig()?.title }}</h1>
+			<button (click)="dismiss()"><i class="icon-ic_fluent_dismiss_12_regular"></i></button>
+		</div>
+	</ng-template>
+
+	<ng-template #footerTemplate>
+		<div class="relative z-100 flex items-center justify-end gap-2 px-4">
+			<button class="container rounded-lg p-2 shadow-2xl" (click)="dismiss()">{{ dialogConfig()?.cancelButtonText }}</button>
+			<button class="danger container rounded-lg p-2 text-red-300 shadow-2xl" (click)="invokeAction()">{{ dialogConfig()?.confirmButtonText }}</button>
+		</div>
+	</ng-template>
+
+	<ng-template #confirmationTemplate>
+		<ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
+		<p class="relative z-100 border-b border-white/30 px-4 pb-6 text-start">{{ dialogConfig()?.message }}</p>
+		<ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+	</ng-template>
+
+	<ng-template #promptTemplate>
+		<ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
+		<div class="border-b border-white/30 px-4 pb-6">
+			<div class="inputContainer flex w-4 w-full flex-col rounded-lg bg-slate-800/20">
+				<div class="flex w-full items-center gap-2 rounded-lg p-2">
+					<input #textInput type="text" class="w-full p-2 outline-none" [placeholder]="dialogConfig()?.textFieldPlaceholder" (input)="textField.set($any($event.target).value)" />
+				</div>
+			</div>
+		</div>
+		<ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+	</ng-template>
+</div>

@@ -2,6 +2,7 @@ export const PINNED_APPS_KEY = 'pinnedApps';
 export const PINNED_DOCK_APPS_KEY = 'pinnedDockApps';
 export const INFLUENTIAL_SETTINGS_KEY = 'influentialSettings';
 export const INFLUENTIAL_COLOR_SETTINGS_KEY = 'influentialColorSettings';
+export const INFLUENTIAL_API_KEYS_KEY = 'influentialApiKeys';
 export const WEATHER_APP = 'com.google.android.apps.weather';
 export const ICON_OVERRIDES: Record<string, string> = {
 	youtube: 'google_youtube.png',

@@ -1,4 +1,7 @@
 export async function parseCurrencyConversion(raw: string, currency_access_key?: string) {
+	if (!currency_access_key) {
+		return null;
+	}
 	const currencyMatch = raw.match(/^(\d+(?:\.\d+)?)\s*(usd|eur|gbp|ars|cad|mxn|inr|yen|jpy|dólares?|euros?|libras?)\s*(a|en|to|in)\s*(usd|eur|gbp|ars|cad|mxn|inr|yen|jpy|dólares?|euros?|libras?)$/);
 	if (currencyMatch) {
 		const amount = parseFloat(currencyMatch[1]);

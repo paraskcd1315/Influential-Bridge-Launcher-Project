@@ -29,7 +29,7 @@
 				}
 			}
 			@case (startMenuTab.Settings) {
-				<start-menu-settings-tab />
+				<start-menu-settings-tab (invokeDialog)="openDialog($event)" />
 			}
 		}
 	</div>
@@ -39,3 +39,4 @@
 		{{ activeLetter() }}
 	</div>
 }
+<start-menu-dialog [dialogConfig]="dialogConfig()" (action)="invokeDialogAction()" />

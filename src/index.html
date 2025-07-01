@@ -45,8 +45,6 @@
 						scale = 1.0;
 				}
 
-				console.log(`DPI: ${dpi}, interpreted slider: ${sliderValue}, scale: ${scale}`);
-
 				const viewport = document.getElementById('viewport');
 				if (viewport) {
 					viewport.setAttribute('content', `width=device-width, initial-scale=${scale.toFixed(2)}, minimum-scale=${scale.toFixed(2)}, maximum-scale=${scale.toFixed(2)}, user-scalable=no`);

@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { BridgeService } from '../../../../utils/bridge/bridge.service';
 import { PersistenceService } from '../../../../utils/persistence/persistence.service';
 import { ISettings, ISettingsColors } from '../../../../utils/persistence/persistence.types';
+import { DialogAction } from '../../dialog/dialog.types';
 
 @Component({
 	selector: 'start-menu-settings-tab',
@@ -16,6 +17,9 @@ export class SettingsTabComponent {
 
 	settings = this._persistenceService.settingsStore;
 	colorSettings = this._persistenceService.colorSettingsStore;
+	apiKeys = this._persistenceService.apiKeysStore;
+
+	invokeDialog = output<DialogAction>();
 
 	openBridgeSettings() {
 		this._bridgeService.requestOpenBridgeSettings();
@@ -26,20 +30,26 @@ export class SettingsTabComponent {
 	}
 
 	resetSettings() {
-		this._persistenceService.resetSettings();
+		this.invokeDialog.emit(DialogAction.ResetSettings);
 	}
 
 	resetPinnedApps() {
-		this._persistenceService.clearApps();
+		this.invokeDialog.emit(DialogAction.ResetPinnedApps);
 	}
 
 	resetColors() {
-		this._persistenceService.resetColors();
+		this.invokeDialog.emit(DialogAction.ResetColors);
 	}
 
 	applyChange(event: Event) {
 		const target = event.target as HTMLInputElement;
 		const settingsKey = target.name as keyof Partial<ISettings>;
+
+		if (settingsKey === 'enableWeatherWidget' && !this.apiKeys().weatherApiKey) {
+			this.invokeDialog.emit(DialogAction.AddWeatherApiKey);
+			target.checked = false; // Reset the checkbox if no API key is set
+			return;
+		}
 
 		this._persistenceService.updateSettings({ [settingsKey]: target.checked });
 
