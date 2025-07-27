@@ -100,6 +100,14 @@ export class AppComponent implements AfterViewInit {
 		if (ratio < 1) {
 			return;
 		}
+		if (!this.enableSpotlightSetting() && !this._startMenuService.startMenuActive() && deltaY < -60) {
+			this._bridgeService.requestLaunchApp('com.paraskcd.spotlightsearch');
+			return;
+		}
+		if (!this.enableSpotlightSetting() && !this._startMenuService.startMenuActive() && deltaY > 60) {
+			this._bridgeService.requestExpandNotificationShade();
+			return;
+		}
 		let progress = 0;
 		if (deltaY > 0) {
 			this._spotlightService.openSpotlight();

@@ -130,4 +130,16 @@ export class TaskbarComponent {
 
 		return `rgb(${rV}, ${gV}, ${bV})`;
 	}
+
+	hasMatchedIcon(packageName?: string): boolean {
+		if (!packageName) {
+			return false;
+		}
+		const matchedIcon = this._iconService.getAppIcon(packageName);
+		if (matchedIcon) {
+			return true;
+		}
+
+		return false;
+	}
 }
